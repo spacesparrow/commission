@@ -1,0 +1,21 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: commission-user
+        uid: 1000
+      context: ./
+      dockerfile: images/php/Dockerfile
+    image: commission
+    container_name: commission-app-container
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - commission-app-network
+
+networks:
+  commission-app-network:
+    driver: bridge
