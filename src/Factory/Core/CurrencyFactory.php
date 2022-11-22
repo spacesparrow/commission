@@ -14,12 +14,12 @@ class CurrencyFactory implements CurrencyFactoryInterface
         return new Currency();
     }
 
-    public function createFromData(array $data): CurrencyInterface
+    public function createFromCodeAndRate(string $code, string $rate, bool $base): CurrencyInterface
     {
         $currency = $this->createNew();
-        $currency->setCode($data['code']);
-        $currency->setRate($data['rate']);
-        $currency->setBase($data['base']);
+        $currency->setCode($code);
+        $currency->setRate($rate);
+        $currency->setBase($base);
 
         return $currency;
     }

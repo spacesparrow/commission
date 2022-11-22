@@ -15,7 +15,9 @@
 	},
 	"require": {
 		"php": ">=7.4",
-		"ext-bcmath": "*",
+		"ext-bcmath": "^7.4",
+		"ext-curl": "^7.4",
+		"ext-json": "^7.4",
 		"brick/money": "^0.7.0"
 	},
 	"require-dev": {

@@ -11,5 +11,5 @@ interface CurrencyFactoryInterface extends FactoryInterface
 {
     public function createNew(): CurrencyInterface;
 
-    public function createFromData(array $data): CurrencyInterface;
+    public function createFromCodeAndRate(string $code, string $rate, bool $base): CurrencyInterface;
 }
