@@ -8,6 +8,7 @@ use App\CommissionTask\Converter\CurrencyConverter;
 use App\CommissionTask\Exception\Kernel\UndefinedInstanceException;
 use App\CommissionTask\Factory\Core\CurrencyFactory;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
+use App\CommissionTask\Reader\Input\FileInputReader;
 use App\CommissionTask\Validator\Reader\ApiCurrencyReaderResponseValidator;
 
 class Container implements ContainerInterface
@@ -18,9 +19,13 @@ class Container implements ContainerInterface
     {
         $config = new Config();
         $config->load();
+
         $this->set('app.config', $config);
+
         $this->set('app.factory.currency', new CurrencyFactory());
+
         $this->set('app.validator.currency_response', new ApiCurrencyReaderResponseValidator($this->get('app.config')));
+
         $this->set(
             'app.reader.currency',
             new ApiCurrencyReader(
@@ -29,6 +34,8 @@ class Container implements ContainerInterface
                 $this->get('app.config')
             )
         );
+        $this->set('app.reader.input.file', new FileInputReader());
+
         $this->set('app.converter.currency', new CurrencyConverter($this->get('app.reader.currency')->getCurrencies()));
     }
 
