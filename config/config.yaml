@@ -1,0 +1,6 @@
+parameters:
+    reader:
+        max_attempts: 5
+        response_required_fields:
+            base_currency_field: base
+            rates_field: rates

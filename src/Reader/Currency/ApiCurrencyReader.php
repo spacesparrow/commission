@@ -7,14 +7,27 @@ namespace App\CommissionTask\Reader\Currency;
 use App\CommissionTask\Exception\Reader\CommunicationException;
 use App\CommissionTask\Exception\Reader\InvalidDataException;
 use App\CommissionTask\Factory\Core\CurrencyFactoryInterface;
+use App\CommissionTask\Kernel\ConfigAwareInterface;
+use App\CommissionTask\Kernel\ConfigAwareTrait;
+use App\CommissionTask\Kernel\ConfigInterface;
+use App\CommissionTask\Validator\ValidatorInterface;
 
-class ApiCurrencyReader implements CurrencyReaderInterface
+class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
 {
+    use ConfigAwareTrait;
+
     private CurrencyFactoryInterface $currencyFactory;
 
-    public function __construct(CurrencyFactoryInterface $currencyFactory)
-    {
+    private ValidatorInterface $validator;
+
+    public function __construct(
+        CurrencyFactoryInterface $currencyFactory,
+        ValidatorInterface $validator,
+        ConfigInterface $config
+    ) {
         $this->currencyFactory = $currencyFactory;
+        $this->validator = $validator;
+        $this->setConfig($config);
     }
 
     public function getCurrencies(): iterable
@@ -26,10 +39,10 @@ class ApiCurrencyReader implements CurrencyReaderInterface
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, 'https://developers.paysera.com/tasks/api/currency-exchange-rates');
+        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getEnvVarByName('CURRENCY_API_URL'));
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-        $remainingAttempts = 5;
+        $remainingAttempts = $this->getConfig()->getConfigParamByName('parameters.reader.max_attempts');
 
         do {
             $currenciesData = curl_exec($curl);
@@ -52,6 +65,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface
             throw new InvalidDataException();
         }
 
+        $this->validator->validate($decodedData);
         $currencies = [];
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
