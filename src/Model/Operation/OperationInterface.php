@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\CommissionTask\Model\Operation;
 
 use App\CommissionTask\Model\Client\ClientAwareInterface;
+use App\CommissionTask\Model\Core\ModelInterface;
 use App\CommissionTask\Model\Core\Partials\CurrencyAwareInterface;
 
-interface OperationInterface extends OperationTypeAwareInterface, CurrencyAwareInterface, ClientAwareInterface
+interface OperationInterface extends OperationTypeAwareInterface, CurrencyAwareInterface, ClientAwareInterface, ModelInterface
 {
     public function getProcessedAt(): \DateTimeInterface;
 

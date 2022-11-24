@@ -29,4 +29,9 @@ class Client implements ClientInterface
     {
         $this->type = $type;
     }
+
+    public function getIdentifier(): int
+    {
+        return $this->id;
+    }
 }

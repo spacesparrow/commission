@@ -68,4 +68,9 @@ class Operation implements OperationInterface
     {
         $this->client = $client;
     }
+
+    public function getIdentifier(): string
+    {
+        return $this->getClient()->getId().$this->getType();
+    }
 }

@@ -6,9 +6,13 @@ namespace App\CommissionTask\Kernel;
 
 use App\CommissionTask\Converter\CurrencyConverter;
 use App\CommissionTask\Exception\Kernel\UndefinedInstanceException;
+use App\CommissionTask\Factory\Client\ClientFactory;
 use App\CommissionTask\Factory\Core\CurrencyFactory;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
 use App\CommissionTask\Reader\Input\FileInputReader;
+use App\CommissionTask\Repository\ClientRepository;
+use App\CommissionTask\Repository\CurrencyRepository;
+use App\CommissionTask\Storage\ArrayStorage;
 use App\CommissionTask\Validator\Reader\ApiCurrencyReaderResponseValidator;
 
 class Container implements ContainerInterface
@@ -17,15 +21,28 @@ class Container implements ContainerInterface
 
     public function init(): void
     {
+        // Initialize application config
         $config = new Config();
         $config->load();
 
+        // Register config
         $this->set('app.config', $config);
 
+        // Register factories
         $this->set('app.factory.currency', new CurrencyFactory());
+        $this->set('app.factory.client', new ClientFactory());
 
+        // Register storage
+        $this->set('app.storage.array', new ArrayStorage());
+
+        // Register repositories
+        $this->set('app.repository.currency', new CurrencyRepository($this->get('app.storage.array')));
+        $this->set('app.repository.client', new ClientRepository($this->get('app.storage.array')));
+
+        // Register validators
         $this->set('app.validator.currency_response', new ApiCurrencyReaderResponseValidator($this->get('app.config')));
 
+        // Register readers
         $this->set(
             'app.reader.currency',
             new ApiCurrencyReader(
@@ -36,6 +53,7 @@ class Container implements ContainerInterface
         );
         $this->set('app.reader.input.file', new FileInputReader());
 
+        // Register currency converter
         $this->set('app.converter.currency', new CurrencyConverter($this->get('app.reader.currency')->getCurrencies()));
     }
 

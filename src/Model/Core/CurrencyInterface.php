@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Model\Core;
 
-interface CurrencyInterface
+interface CurrencyInterface extends ModelInterface
 {
     public function getCode(): string;
 

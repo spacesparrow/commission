@@ -41,4 +41,9 @@ class Currency implements CurrencyInterface
     {
         $this->base = $base;
     }
+
+    public function getIdentifier(): string
+    {
+        return $this->code;
+    }
 }
