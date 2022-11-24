@@ -17,7 +17,7 @@ class ArrayStorage implements StorageInterface
 
     public function all(?string $partition = null): array
     {
-        return $partition !== null ? $this->storage[$partition] : $this->storage;
+        return ($partition !== null ? $this->storage[$partition] : $this->storage) ?? [];
     }
 
     public function has(string $partition, $identifier): bool
