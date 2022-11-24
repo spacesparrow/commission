@@ -21,3 +21,9 @@ parameters:
                 scale: 2
             -   code: JPY
                 scale: 0
+    fee:
+        deposit:
+            percent: 0.0003
+        withdraw:
+            business:
+                percent: 0.005
