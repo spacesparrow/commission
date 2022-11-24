@@ -37,9 +37,9 @@ class ClientRepository implements RepositoryInterface
         return $this->getStorage()->has(self::PARTITION_CLIENTS, $identifier);
     }
 
-    public function add($identifier, ModelInterface $element): void
+    public function add(ModelInterface $element): void
     {
-        $this->getStorage()->add(self::PARTITION_CLIENTS, $identifier, $element);
+        $this->getStorage()->add(self::PARTITION_CLIENTS, $element->getIdentifier(), $element);
     }
 
     public function remove($identifier): void

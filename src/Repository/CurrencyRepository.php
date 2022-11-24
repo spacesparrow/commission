@@ -37,9 +37,9 @@ class CurrencyRepository implements RepositoryInterface
         return $this->getStorage()->has(self::PARTITION_CURRENCIES, $identifier);
     }
 
-    public function add($identifier, ModelInterface $element): void
+    public function add(ModelInterface $element): void
     {
-        $this->getStorage()->add(self::PARTITION_CURRENCIES, $identifier, $element);
+        $this->getStorage()->add(self::PARTITION_CURRENCIES, $element->getIdentifier(), $element);
     }
 
     public function remove($identifier): void

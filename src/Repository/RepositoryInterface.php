@@ -15,7 +15,7 @@ interface RepositoryInterface extends StorageAwareInterface
 
     public function has($identifier): bool;
 
-    public function add($identifier, ModelInterface $element): void;
+    public function add(ModelInterface $element): void;
 
     public function remove($identifier): void;
 
