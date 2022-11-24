@@ -8,6 +8,10 @@ parameters:
         types:
             - business
             - private
+    operation:
+        types:
+            - deposit
+            - withdraw
     currency:
         base_currency_code: EUR
         supported:

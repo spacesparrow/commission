@@ -17,6 +17,7 @@ use App\CommissionTask\Repository\ClientRepository;
 use App\CommissionTask\Repository\CurrencyRepository;
 use App\CommissionTask\Storage\ArrayStorage;
 use App\CommissionTask\Validator\Reader\ApiCurrencyReaderResponseValidator;
+use App\CommissionTask\Validator\Reader\FileInputReaderValidator;
 
 class Container implements ContainerInterface
 {
@@ -56,6 +57,7 @@ class Container implements ContainerInterface
 
         // Register validators
         $this->set('app.validator.currency_response', new ApiCurrencyReaderResponseValidator($this->get('app.config')));
+        $this->set('app.validator.file_input', new FileInputReaderValidator($this->get('app.config')));
 
         // Register readers
         $this->set(
@@ -66,7 +68,7 @@ class Container implements ContainerInterface
                 $this->get('app.config')
             )
         );
-        $this->set('app.reader.input.file', new FileInputReader());
+        $this->set('app.reader.input.file', new FileInputReader($this->get('app.validator.file_input')));
 
         // Register currency converter
 //        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.reader.currency')->getCurrencies()));

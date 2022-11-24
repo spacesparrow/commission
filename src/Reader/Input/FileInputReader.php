@@ -4,8 +4,17 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Reader\Input;
 
+use App\CommissionTask\Validator\ValidatorInterface;
+
 class FileInputReader implements InputReaderInterface
 {
+    private ValidatorInterface $validator;
+
+    public function __construct(ValidatorInterface $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /** @param string $source */
     public function read($source): \Generator
     {
@@ -22,6 +31,7 @@ class FileInputReader implements InputReaderInterface
                 ['processed_at', 'client_id', 'client_type', 'operation_type', 'amount', 'currency'],
                 $row
             );
+            $this->validator->validate($operationData);
 
             yield $operationData;
         }
