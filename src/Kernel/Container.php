@@ -15,6 +15,7 @@ use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
 use App\CommissionTask\Reader\Input\FileInputReader;
 use App\CommissionTask\Repository\ClientRepository;
 use App\CommissionTask\Repository\CurrencyRepository;
+use App\CommissionTask\Repository\OperationRepository;
 use App\CommissionTask\Storage\ArrayStorage;
 use App\CommissionTask\Validator\Reader\ApiCurrencyReaderResponseValidator;
 use App\CommissionTask\Validator\Reader\FileInputReaderValidator;
@@ -38,6 +39,7 @@ class Container implements ContainerInterface
         // Register repositories
         $this->set('app.repository.currency', new CurrencyRepository($this->get('app.storage.array')));
         $this->set('app.repository.client', new ClientRepository($this->get('app.storage.array')));
+        $this->set('app.repository.operation', new OperationRepository($this->get('app.storage.array')));
 
         // Register factories
         $this->set('app.factory.currency', new CurrencyFactory());
