@@ -6,5 +6,5 @@ namespace App\CommissionTask\Reader\Currency;
 
 interface CurrencyReaderInterface
 {
-    public function getCurrencies(): iterable;
+    public function read(): void;
 }

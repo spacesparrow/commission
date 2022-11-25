@@ -65,13 +65,14 @@ class Container implements ContainerInterface
             new ApiCurrencyReader(
                 $this->get('app.factory.currency'),
                 $this->get('app.validator.currency_response'),
+                $this->get('app.repository.currency'),
                 $this->get('app.config')
             )
         );
         $this->set('app.reader.input.file', new FileInputReader($this->get('app.validator.file_input')));
 
         // Register currency converter
-//        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.reader.currency')->getCurrencies()));
+        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.repository.currency')->all()));
     }
 
     public function get(string $key): object

@@ -10,6 +10,7 @@ use App\CommissionTask\Factory\Core\CurrencyFactoryInterface;
 use App\CommissionTask\Kernel\ConfigAwareInterface;
 use App\CommissionTask\Kernel\ConfigAwareTrait;
 use App\CommissionTask\Kernel\ConfigInterface;
+use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Validator\ValidatorInterface;
 
 class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
@@ -20,19 +21,23 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
 
     private ValidatorInterface $validator;
 
+    private RepositoryInterface $currencyRepository;
+
     public function __construct(
         CurrencyFactoryInterface $currencyFactory,
         ValidatorInterface $validator,
+        RepositoryInterface $currencyRepository,
         ConfigInterface $config
     ) {
         $this->currencyFactory = $currencyFactory;
         $this->validator = $validator;
+        $this->currencyRepository = $currencyRepository;
         $this->setConfig($config);
     }
 
-    public function getCurrencies(): iterable
+    public function read(): void
     {
-        return $this->parse($this->request());
+        $this->parse($this->request());
     }
 
     private function request(): string
@@ -57,7 +62,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
         return $currenciesData;
     }
 
-    private function parse(string $currenciesData): array
+    private function parse(string $currenciesData): void
     {
         try {
             $decodedData = json_decode($currenciesData, true, 512, JSON_THROW_ON_ERROR);
@@ -66,16 +71,14 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
         }
 
         $this->validator->validate($decodedData);
-        $currencies = [];
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
-            $currencies[] = $this->currencyFactory->createFromCodeAndRate(
+            $currency = $this->currencyFactory->createFromCodeAndRate(
                 $currencyCode,
                 (string) $rate,
                 $currencyCode === $decodedData['base']
             );
+            $this->currencyRepository->add($currency);
         }
-
-        return $currencies;
     }
 }
