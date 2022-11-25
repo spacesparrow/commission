@@ -16,7 +16,7 @@ class DepositFeeCharger implements FeeChargerInterface
 {
     use ConfigAwareTrait;
 
-    private CurrencyConverterInterface $currencyConverter;
+    protected CurrencyConverterInterface $currencyConverter;
 
     public function __construct(ConfigInterface $config, CurrencyConverterInterface $currencyConverter)
     {

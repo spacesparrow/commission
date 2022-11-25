@@ -72,7 +72,7 @@ class Container implements ContainerInterface
         $this->set('app.reader.input.file', new FileInputReader($this->get('app.validator.file_input')));
 
         // Register currency converter
-        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.repository.currency')->all()));
+        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.repository.currency')));
     }
 
     public function get(string $key): object

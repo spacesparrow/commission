@@ -9,13 +9,13 @@ use App\CommissionTask\Model\Core\CurrencyInterface;
 
 class Operation implements OperationInterface
 {
-    private CurrencyInterface $currency;
+    protected CurrencyInterface $currency;
 
-    private \DateTimeInterface $processedAt;
+    protected \DateTimeInterface $processedAt;
 
-    private string $amount;
+    protected string $amount;
 
-    private string $type;
+    protected string $type;
 
     private ClientInterface  $client;
 
@@ -71,6 +71,6 @@ class Operation implements OperationInterface
 
     public function getIdentifier(): string
     {
-        return $this->getClient()->getId().$this->getType();
+        return $this->getProcessedAt()->format('Y-m-d H:i:s').$this->getClient()->getId().$this->getType();
     }
 }

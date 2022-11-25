@@ -10,9 +10,9 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class CurrencyProvider implements ProviderInterface
 {
-    private RepositoryInterface $currencyRepository;
+    protected RepositoryInterface $currencyRepository;
 
-    private CurrencyFactoryInterface $currencyFactory;
+    protected CurrencyFactoryInterface $currencyFactory;
 
     public function __construct(RepositoryInterface $currencyRepository, CurrencyFactoryInterface $currencyFactory)
     {

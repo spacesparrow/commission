@@ -10,9 +10,9 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class ClientProvider implements ProviderInterface
 {
-    private RepositoryInterface $clientRepository;
+    protected RepositoryInterface $clientRepository;
 
-    private ClientFactoryInterface $clientFactory;
+    protected ClientFactoryInterface $clientFactory;
 
     public function __construct(RepositoryInterface $clientRepository, ClientFactoryInterface $clientFactory)
     {

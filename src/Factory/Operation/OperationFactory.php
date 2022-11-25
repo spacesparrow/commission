@@ -12,9 +12,9 @@ use App\CommissionTask\Provider\ProviderInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    private ProviderInterface $currencyProvider;
+    protected ProviderInterface $currencyProvider;
 
-    private ProviderInterface $clientProvider;
+    protected ProviderInterface $clientProvider;
 
     public function __construct(ProviderInterface $currencyProvider, ProviderInterface $clientProvider)
     {

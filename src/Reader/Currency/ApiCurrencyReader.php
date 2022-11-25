@@ -17,11 +17,11 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 
-    private CurrencyFactoryInterface $currencyFactory;
+    protected CurrencyFactoryInterface $currencyFactory;
 
-    private ValidatorInterface $validator;
+    protected ValidatorInterface $validator;
 
-    private RepositoryInterface $currencyRepository;
+    protected RepositoryInterface $currencyRepository;
 
     public function __construct(
         CurrencyFactoryInterface $currencyFactory,
