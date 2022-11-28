@@ -40,7 +40,7 @@ class CurrencyConverter implements CurrencyConverterInterface
         }
 
         return $this->getConverter()->convert(
-            Money::of($amount, $from),
+            Money::of($amount, $from, null, RoundingMode::UP),
             $to,
             new CustomContext(self::DEFAULT_SCALE),
             RoundingMode::UP

@@ -20,4 +20,6 @@ interface RepositoryInterface extends StorageAwareInterface
     public function remove($identifier): void;
 
     public function reset(): void;
+
+    public function findUsingClosure(callable $closure): iterable;
 }

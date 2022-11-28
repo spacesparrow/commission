@@ -51,4 +51,9 @@ class ClientRepository implements RepositoryInterface
     {
         $this->getStorage()->reset(self::PARTITION_CLIENTS);
     }
+
+    public function findUsingClosure(callable $closure): iterable
+    {
+        return array_filter((array) $this->all(), $closure);
+    }
 }

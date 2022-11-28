@@ -11,7 +11,9 @@ use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
+use App\CommissionTask\Util\MoneyUtil;
 use Brick\Math\RoundingMode;
+use Brick\Money\Exception\UnknownCurrencyException;
 
 class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
@@ -25,17 +27,17 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
         $this->currencyConverter = $currencyConverter;
     }
 
+    /**
+     * @throws UnknownCurrencyException
+     */
     public function charge(OperationInterface $operation): void
     {
-        $convertedAmount = $this->currencyConverter->convert(
-            $operation->getCurrency()->getCode(),
-            $this->config->getConfigParamByName('parameters.currency.base_currency_code'),
-            $operation->getAmount()
+        $operatingAmount = MoneyUtil::createMoneyFromOperation($operation);
+        $fee = $operatingAmount->multipliedBy(
+            $this->config->getConfigParamByName('parameters.fee.withdraw.business.percent'),
+            RoundingMode::UP
         );
-        $fee = $convertedAmount->multipliedBy(
-            $this->config->getConfigParamByName('parameters.fee.withdraw.business.percent')
-        );
-        echo $fee->toScale(2, RoundingMode::UP).PHP_EOL;
+        echo $fee->getAmount().PHP_EOL;
     }
 
     public function supports(OperationInterface $operation): bool

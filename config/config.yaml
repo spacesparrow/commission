@@ -27,3 +27,7 @@ parameters:
         withdraw:
             business:
                 percent: 0.005
+            private:
+                percent: 0.003
+                free_amount_per_week: 1000
+                free_count_per_week: 3

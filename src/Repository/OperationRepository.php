@@ -51,4 +51,9 @@ class OperationRepository implements RepositoryInterface
     {
         $this->getStorage()->reset(self::PARTITION_OPERATIONS);
     }
+
+    public function findUsingClosure(callable $closure): iterable
+    {
+        return array_filter((array) $this->all(), $closure);
+    }
 }
