@@ -28,17 +28,29 @@ class CurrencyProviderTest extends TestCase
         $currency->setRate($data['rate']);
         $currency->setBase($data['base']);
 
-        $found
-            ? $currencyRepositoryMock
-            ->expects(static::once())
-            ->method('get')
-            ->with($identifier)
-            ->willReturn($currency)
-            : $currencyFactoryMock
-            ->expects(static::once())
-            ->method('createFromCodeAndRate')
-            ->with($data['code'], $data['rate'], $data['base'])
-            ->willReturn($currency);
+        if ($found) {
+            $currencyRepositoryMock
+                ->expects(static::once())
+                ->method('get')
+                ->with($identifier)
+                ->willReturn($currency);
+            $currencyFactoryMock
+                ->expects(static::never())
+                ->method('createFromCodeAndRate')
+                ->withAnyParameters();
+        } else {
+            $currencyRepositoryMock
+                ->expects(static::once())
+                ->method('get')
+                ->with($identifier)
+                ->willReturn(null);
+            $currencyFactoryMock
+                ->expects(static::once())
+                ->method('createFromCodeAndRate')
+                ->with($data['code'], $data['rate'], $data['base'])
+                ->willReturn($currency);
+        }
+
         $currencyRepositoryMock->expects(static::once())->method('add');
 
         $providedCurrency = (new CurrencyProvider($currencyRepositoryMock, $currencyFactoryMock))

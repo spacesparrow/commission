@@ -28,17 +28,26 @@ class ClientProviderTest extends TestCase
         $client->setId($identifier);
         $client->setType($data['client_type']);
 
-        $found
-            ? $clientRepositoryMock
-            ->expects(static::once())
-            ->method('get')
-            ->with($identifier)
-            ->willReturn($client)
-            : $clientFactoryMock
-            ->expects(static::once())
-            ->method('createFromIdAndType')
-            ->with($identifier, $data['client_type'])
-            ->willReturn($client);
+        if ($found) {
+            $clientRepositoryMock
+                ->expects(static::once())
+                ->method('get')
+                ->with($identifier)
+                ->willReturn($client);
+            $clientFactoryMock->expects(static::never())->method('createFromIdAndType')->withAnyParameters();
+        } else {
+            $clientRepositoryMock
+                ->expects(static::once())
+                ->method('get')
+                ->with($identifier)
+                ->willReturn(null);
+            $clientFactoryMock
+                ->expects(static::once())
+                ->method('createFromIdAndType')
+                ->with($identifier, $data['client_type'])
+                ->willReturn($client);
+        }
+
         $clientRepositoryMock->expects(static::once())->method('add');
 
         $providedClient = (new ClientProvider($clientRepositoryMock, $clientFactoryMock))->provide($identifier, $data);
