@@ -58,7 +58,7 @@ class OperationFactoryTest extends TestCase
         $currencyProviderMock
             ->expects(static::once())
             ->method('provide')
-            ->with($csvRow['currency'], [])
+            ->with($csvRow['currency'], ['code' => $csvRow['currency'], 'rate' => '0', 'base' => false])
             ->willReturn($currency);
 
         $createdOperation = (new OperationFactory($currencyProviderMock, $clientProviderMock))

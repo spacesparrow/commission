@@ -40,7 +40,10 @@ class OperationFactory implements OperationFactoryInterface
         $client = $this->clientProvider->provide((int) $csvRow['client_id'], ['client_type' => $csvRow['client_type']]);
         $operation->setClient($client);
         /** @var CurrencyInterface $currency */
-        $currency = $this->currencyProvider->provide($csvRow['currency'], []);
+        $currency = $this->currencyProvider->provide(
+            $csvRow['currency'],
+            ['code' => $csvRow['currency'], 'rate' => '0', 'base' => false]
+        );
         $operation->setCurrency($currency);
 
         return $operation;
