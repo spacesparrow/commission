@@ -36,7 +36,7 @@ class ArrayStorageTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForAllTesting
+     * @dataProvider dataProviderGeneralWithEmptyPartitions
      * @covers       \App\CommissionTask\Storage\ArrayStorage::all
      */
     public function testAll(?string $partition, $identifier, $expected): void
@@ -117,7 +117,7 @@ class ArrayStorageTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderForAllTesting
+     * @dataProvider dataProviderGeneralWithEmptyPartitions
      * @covers \App\CommissionTask\Storage\ArrayStorage::reset
      */
     public function testReset(?string $partition, $identifier, $expected): void
@@ -166,7 +166,7 @@ class ArrayStorageTest extends TestCase
         ];
     }
 
-    public function dataProviderForAllTesting(): array
+    public function dataProviderGeneralWithEmptyPartitions(): array
     {
         return array_merge(
             $this->dataProviderGeneral(),
