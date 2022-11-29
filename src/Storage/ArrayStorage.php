@@ -41,10 +41,6 @@ class ArrayStorage implements StorageInterface
 
     public function reset(?string $partition = null): void
     {
-        if ($partition) {
-            unset($this->storage[$partition]);
-        } else {
-            unset($this->storage);
-        }
+        $partition ? $this->storage[$partition] = [] : $this->storage = [];
     }
 }
