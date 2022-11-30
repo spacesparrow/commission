@@ -1,0 +1,33 @@
+parameters:
+    reader:
+        max_attempts: 5
+        response_required_fields:
+            base_currency_field: base
+            rates_field: rates
+    client:
+        types:
+            - business
+            - private
+    operation:
+        types:
+            - deposit
+            - withdraw
+    currency:
+        base_currency_code: EUR
+        supported:
+            -   code: EUR
+                scale: 2
+            -   code: USD
+                scale: 2
+            -   code: JPY
+                scale: 0
+    fee:
+        deposit:
+            percent: 0.0003
+        withdraw:
+            business:
+                percent: 0.005
+            private:
+                percent: 0.003
+                free_amount_per_week: 1000
+                free_count_per_week: 3

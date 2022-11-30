@@ -12,9 +12,18 @@
     stopOnFailure               = "false"
     bootstrap                   = "vendor/autoload.php" >
 
+    <coverage>
+        <include>
+            <directory>./src</directory>
+        </include>
+    </coverage>
+
     <testsuites>
-        <testsuite name="Project Test Suite">
-            <directory>tests</directory>
+        <testsuite name="Unit tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Functional tests">
+            <directory>tests/Functional</directory>
         </testsuite>
     </testsuites>
 </phpunit>

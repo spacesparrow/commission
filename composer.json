@@ -15,8 +15,12 @@
 	},
 	"require": {
 		"php": ">=7.4",
-		"ext-bcmath": "*",
-		"brick/money": "^0.7.0"
+		"ext-bcmath": "^7.4",
+		"ext-curl": "^7.4",
+		"ext-json": "^7.4",
+		"brick/money": "^0.7.0",
+		"symfony/dotenv": "^5.4",
+		"symfony/yaml": "^5.4"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.13",
@@ -34,6 +38,10 @@
 		"test": [
 			"@phpunit",
 			"@test-cs"
+		],
+		"post-root-package-install": [
+			"@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+			"@php -r \"file_exists('.php-cs-fixer.php') || copy('.php-cs-fixer.dist.php', '.php-cs-fixer.php');\""
 		]
 	}
 }
