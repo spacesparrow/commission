@@ -38,6 +38,10 @@
 		"test": [
 			"@phpunit",
 			"@test-cs"
+		],
+		"post-root-package-install": [
+			"@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
+			"@php -r \"file_exists('.php-cs-fixer.php') || copy('.php-cs-fixer.dist.php', '.php-cs-fixer.php');\""
 		]
 	}
 }
