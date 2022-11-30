@@ -57,12 +57,13 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         }
 
         $baseCurrencyCode = $this->getConfig()->getConfigParamByName('parameters.currency.base_currency_code');
-        $convertedAmount = $this->currencyConverter->convert(
-            $operation->getCurrency()->getCode(),
+        $operationAmount = MoneyUtil::createMoneyFromOperation($operation)->getAmount();
+        $feeChargingAmount = $this->getFeeChargingAmount(
+            $operationAmount,
+            $clientOperationsInWeek,
             $baseCurrencyCode,
-            $operation->getAmount()
+            $operation->getCurrency()->getCode()
         );
-        $feeChargingAmount = $this->getFeeChargingAmount($convertedAmount, $clientOperationsInWeek, $baseCurrencyCode);
 
         if ($feeChargingAmount->isNegativeOrZero()) {
             echo Money::zero($operation->getCurrency()->getCode())->getAmount().PHP_EOL;
@@ -70,13 +71,8 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             return;
         }
 
-        $originalCurrencyFee = $this->currencyConverter->convert(
-            $baseCurrencyCode,
-            $operation->getCurrency()->getCode(),
-            $feeChargingAmount->multipliedBy($feePercent)->__toString()
-        );
         $originalCurrencyFee = Money::of(
-            $originalCurrencyFee,
+            $feeChargingAmount->multipliedBy($feePercent),
             $operation->getCurrency()->getCode(),
             null,
             RoundingMode::UP
@@ -109,9 +105,10 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
      * @throws MoneyMismatchException
      */
     private function getFeeChargingAmount(
-        BigDecimal $convertedAmount,
+        BigDecimal $operationAmount,
         array $clientOperationsInWeek,
-        string $baseCurrencyCode
+        string $baseCurrencyCode,
+        string $originalCurrencyCode
     ): BigDecimal {
         $freeAmountPerWeek = Money::of(
             $this->getConfig()->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),
@@ -135,13 +132,23 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         }
 
         if ($alreadySpent->isGreaterThanOrEqualTo($freeAmountPerWeek)) {
-            return $convertedAmount;
+            return $operationAmount;
         }
+
+        $convertedAmount = $this->currencyConverter->convert(
+            $originalCurrencyCode,
+            $baseCurrencyCode,
+            $operationAmount->__toString()
+        );
 
         $willBeSpent = $alreadySpent->plus($convertedAmount, RoundingMode::UP);
 
         if ($willBeSpent->isGreaterThan($freeAmountPerWeek)) {
-            return $willBeSpent->minus($freeAmountPerWeek, RoundingMode::UP)->getAmount();
+            return $this->currencyConverter->convert(
+                $baseCurrencyCode,
+                $originalCurrencyCode,
+                $willBeSpent->minus($freeAmountPerWeek, RoundingMode::UP)->getAmount()->__toString()
+            );
         }
 
         return BigDecimal::zero();

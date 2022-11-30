@@ -59,9 +59,9 @@ class Config implements ConfigInterface
     public function getConfigParamByName(string $paramName)
     {
         $keys = $this->resolveConfigKeys($paramName);
-        $value = $this->config;
+        $value = $this->getConfigArray();
 
-        while ($keys && $this->config !== []) {
+        while ($keys && $value !== []) {
             $key = array_shift($keys);
 
             $value = $value[$key] ?? null;
@@ -77,5 +77,10 @@ class Config implements ConfigInterface
         }
 
         return explode(self::CONFIG_SEPARATOR, $key);
+    }
+
+    protected function getConfigArray(): array
+    {
+        return $this->config;
     }
 }

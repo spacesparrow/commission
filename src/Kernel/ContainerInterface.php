@@ -13,4 +13,6 @@ interface ContainerInterface
     public function set(string $key, object $instance): void;
 
     public function has(string $key): bool;
+
+    public function replace(string $key, object $instance): void;
 }

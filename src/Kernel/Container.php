@@ -92,6 +92,13 @@ class Container implements ContainerInterface
         return !empty($this->instances[$key]);
     }
 
+    public function replace(string $key, object $instance): void
+    {
+        if ($this->has($key)) {
+            $this->instances[$key] = $instance;
+        }
+    }
+
     private function registerRepositories(): void
     {
         $this->set('app.repository.currency', new CurrencyRepository($this->get('app.storage.array')));

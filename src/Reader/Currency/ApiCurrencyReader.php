@@ -40,7 +40,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
         $this->parse($this->request());
     }
 
-    private function request(): string
+    public function request(): string
     {
         $curl = curl_init();
 
@@ -62,7 +62,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
         return $currenciesData;
     }
 
-    private function parse(string $currenciesData): void
+    protected function parse(string $currenciesData): void
     {
         try {
             $decodedData = json_decode($currenciesData, true, 512, JSON_THROW_ON_ERROR);

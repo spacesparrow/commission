@@ -8,15 +8,16 @@ use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
 use App\CommissionTask\Kernel\Container;
 use App\CommissionTask\Kernel\ContainerAwareInterface;
 use App\CommissionTask\Kernel\ContainerAwareTrait;
+use App\CommissionTask\Kernel\ContainerInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
 
 final class Application implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    public function __construct()
+    public function __construct(?ContainerInterface $container = null)
     {
-        $this->setContainer(new Container());
+        $this->setContainer($container ?? new Container());
         $this->getContainer()->init();
     }
 
