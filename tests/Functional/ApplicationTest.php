@@ -68,7 +68,7 @@ final class ApplicationTest extends TestCase
     public function testRun(string $pathToFile, string $expectedOutput): void
     {
         $argv = ['script.php', $pathToFile];
-        $this->app->run(count($argv), $argv);
+        $this->app->run($argv);
 
         $this->expectOutputString($expectedOutput);
     }
