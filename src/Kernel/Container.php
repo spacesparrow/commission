@@ -13,8 +13,6 @@ use App\CommissionTask\Factory\Client\ClientFactory;
 use App\CommissionTask\Factory\Core\CurrencyFactory;
 use App\CommissionTask\Factory\Operation\OperationFactory;
 use App\CommissionTask\Processor\OperationProcessor;
-use App\CommissionTask\Provider\ClientProvider;
-use App\CommissionTask\Provider\CurrencyProvider;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
 use App\CommissionTask\Reader\Input\FileInputReader;
 use App\CommissionTask\Repository\ClientRepository;
@@ -42,13 +40,6 @@ class Container implements ContainerInterface
 
         $this->registerRepositories();
         $this->registerFactories();
-        $this->registerProviders();
-
-        $this->set(
-            'app.factory.operation',
-            new OperationFactory($this->get('app.provider.currency'), $this->get('app.provider.client'))
-        );
-
         $this->registerValidators();
         $this->registerReaders();
 
@@ -92,22 +83,18 @@ class Container implements ContainerInterface
         $this->set('app.repository.operation', new OperationRepository($this->get('app.storage.array')));
     }
 
-    private function registerProviders(): void
-    {
-        $this->set(
-            'app.provider.currency',
-            new CurrencyProvider($this->get('app.repository.currency'), $this->get('app.factory.currency'))
-        );
-        $this->set(
-            'app.provider.client',
-            new ClientProvider($this->get('app.repository.client'), $this->get('app.factory.client'))
-        );
-    }
-
     private function registerFactories(): void
     {
         $this->set('app.factory.currency', new CurrencyFactory());
         $this->set('app.factory.client', new ClientFactory());
+        $this->set(
+            'app.factory.operation',
+            new OperationFactory(
+                $this->get('app.repository.client'),
+                $this->get('app.repository.currency'),
+                $this->get('app.factory.client')
+            )
+        );
     }
 
     private function registerValidators(): void
