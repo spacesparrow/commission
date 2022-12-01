@@ -54,9 +54,9 @@ final class ApplicationTest extends TestCase
             ->getMock();
         $currencyReader->method('request')->willReturn(ApiCurrencyDataFixture::getTestData());
 
-        $container->replace('app.reader.input.file', $fileInputReader);
-        $container->replace('app.config', $config);
-        $container->replace('app.reader.currency', $currencyReader);
+        $container->set('app.reader.input.file', $fileInputReader);
+        $container->set('app.config', $config);
+        $container->set('app.reader.currency', $currencyReader);
 
         $this->app = new Application($container);
     }

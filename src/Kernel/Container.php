@@ -73,7 +73,7 @@ class Container implements ContainerInterface
 
     public function get(string $key): object
     {
-        if (!$this->has($key)) {
+        if (empty($this->instances[$key])) {
             throw new UndefinedInstanceException();
         }
 
@@ -82,21 +82,7 @@ class Container implements ContainerInterface
 
     public function set(string $key, object $instance): void
     {
-        if (!$this->has($key)) {
-            $this->instances[$key] = $instance;
-        }
-    }
-
-    public function has(string $key): bool
-    {
-        return !empty($this->instances[$key]);
-    }
-
-    public function replace(string $key, object $instance): void
-    {
-        if ($this->has($key)) {
-            $this->instances[$key] = $instance;
-        }
+        $this->instances[$key] = $instance;
     }
 
     private function registerRepositories(): void

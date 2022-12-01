@@ -11,8 +11,4 @@ interface ContainerInterface
     public function get(string $key): object;
 
     public function set(string $key, object $instance): void;
-
-    public function has(string $key): bool;
-
-    public function replace(string $key, object $instance): void;
 }
