@@ -10,6 +10,13 @@ class ArrayStorage implements StorageInterface
 {
     protected array $storage = [];
 
+    public function initPartition(string $partition): void
+    {
+        if (!isset($this->storage[$partition])) {
+            $this->storage[$partition] = [];
+        }
+    }
+
     public function get(string $partition, $identifier): ?ModelInterface
     {
         return $this->storage[$partition][$identifier] ?? null;

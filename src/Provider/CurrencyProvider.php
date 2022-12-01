@@ -10,14 +10,10 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class CurrencyProvider implements ProviderInterface
 {
-    protected RepositoryInterface $currencyRepository;
-
-    protected CurrencyFactoryInterface $currencyFactory;
-
-    public function __construct(RepositoryInterface $currencyRepository, CurrencyFactoryInterface $currencyFactory)
-    {
-        $this->currencyRepository = $currencyRepository;
-        $this->currencyFactory = $currencyFactory;
+    public function __construct(
+        protected RepositoryInterface $currencyRepository,
+        protected CurrencyFactoryInterface $currencyFactory
+    ) {
     }
 
     public function provide($identifier, array $data): ModelInterface

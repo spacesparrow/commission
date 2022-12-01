@@ -11,6 +11,7 @@ use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Util\MoneyUtil;
+use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
 
@@ -37,7 +38,7 @@ class DepositFeeCharger implements FeeChargerInterface
             RoundingMode::UP
         );
 
-        echo $fee->getAmount().PHP_EOL;
+        OutputUtil::writeLn($fee->getAmount());
     }
 
     public function supports(OperationInterface $operation): bool

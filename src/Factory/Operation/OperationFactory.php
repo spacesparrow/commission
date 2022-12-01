@@ -12,14 +12,10 @@ use App\CommissionTask\Provider\ProviderInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    protected ProviderInterface $currencyProvider;
-
-    protected ProviderInterface $clientProvider;
-
-    public function __construct(ProviderInterface $currencyProvider, ProviderInterface $clientProvider)
-    {
-        $this->currencyProvider = $currencyProvider;
-        $this->clientProvider = $clientProvider;
+    public function __construct(
+        protected ProviderInterface $currencyProvider,
+        protected ProviderInterface $clientProvider
+    ) {
     }
 
     public function createNew(): OperationInterface

@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace App\CommissionTask\Repository;
 
 use App\CommissionTask\Model\Core\ModelInterface;
-use App\CommissionTask\Storage\StorageAwareInterface;
 
-interface RepositoryInterface extends StorageAwareInterface
+interface RepositoryInterface
 {
     public function get($identifier): ?ModelInterface;
 

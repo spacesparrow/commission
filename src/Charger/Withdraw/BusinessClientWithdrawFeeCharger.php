@@ -12,6 +12,7 @@ use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Util\MoneyUtil;
+use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
 
@@ -37,7 +38,8 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
             $this->config->getConfigParamByName('parameters.fee.withdraw.business.percent'),
             RoundingMode::UP
         );
-        echo $fee->getAmount().PHP_EOL;
+
+        OutputUtil::writeLn($fee->getAmount());
     }
 
     public function supports(OperationInterface $operation): bool

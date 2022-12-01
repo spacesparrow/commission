@@ -8,6 +8,8 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 interface StorageInterface
 {
+    public function initPartition(string $partition): void;
+
     public function get(string $partition, $identifier): ?ModelInterface;
 
     public function all(?string $partition = null): iterable;

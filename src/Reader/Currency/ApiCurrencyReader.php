@@ -17,21 +17,12 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
 {
     use ConfigAwareTrait;
 
-    protected CurrencyFactoryInterface $currencyFactory;
-
-    protected ValidatorInterface $validator;
-
-    protected RepositoryInterface $currencyRepository;
-
     public function __construct(
-        CurrencyFactoryInterface $currencyFactory,
-        ValidatorInterface $validator,
-        RepositoryInterface $currencyRepository,
+        protected CurrencyFactoryInterface $currencyFactory,
+        protected ValidatorInterface $validator,
+        protected RepositoryInterface $currencyRepository,
         ConfigInterface $config
     ) {
-        $this->currencyFactory = $currencyFactory;
-        $this->validator = $validator;
-        $this->currencyRepository = $currencyRepository;
         $this->setConfig($config);
     }
 
@@ -66,7 +57,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
     {
         try {
             $decodedData = json_decode($currenciesData, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (\JsonException) {
             throw new InvalidDataException();
         }
 

@@ -12,8 +12,8 @@ use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
-use App\CommissionTask\Util\DateTimeUtil;
 use App\CommissionTask\Util\MoneyUtil;
+use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\MoneyMismatchException;
@@ -50,8 +50,10 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         $clientOperationsInWeek = $this->operationRepository->findUsingClosure($this->getClosureForSearch($operation));
 
         if ($freeCountPerWeek < count($clientOperationsInWeek) + 1) {
-            echo MoneyUtil::createMoneyFromOperation($operation)
-                    ->multipliedBy($feePercent, RoundingMode::UP)->getAmount().PHP_EOL;
+            $feeAmount = MoneyUtil::createMoneyFromOperation($operation)
+                ->multipliedBy($feePercent, RoundingMode::UP)
+                ->getAmount();
+            OutputUtil::writeLn($feeAmount);
 
             return;
         }
@@ -66,7 +68,8 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         );
 
         if ($feeChargingAmount->isNegativeOrZero()) {
-            echo Money::zero($operation->getCurrency()->getCode())->getAmount().PHP_EOL;
+            $zeroFeeAmount = Money::zero($operation->getCurrency()->getCode())->getAmount();
+            OutputUtil::writeLn($zeroFeeAmount);
 
             return;
         }
@@ -78,7 +81,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             RoundingMode::UP
         );
 
-        echo $originalCurrencyFee->getAmount().PHP_EOL;
+        OutputUtil::writeLn($originalCurrencyFee->getAmount());
     }
 
     public function supports(OperationInterface $operation): bool
@@ -91,13 +94,23 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
     {
         $client = $operation->getClient();
         $processedDate = clone $operation->getProcessedAt();
-        $week = DateTimeUtil::getWeekIdentifier($processedDate);
+        $week = $this->getWeekIdentifier($processedDate);
 
-        return static function (OperationInterface $operation) use ($client, $week) {
+        return function (OperationInterface $operation) use ($client, $week) {
             return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
                 && $operation->getClient() === $client
-                && DateTimeUtil::getWeekIdentifier($operation->getProcessedAt()) === $week;
+                && $this->getWeekIdentifier($operation->getProcessedAt()) === $week;
         };
+    }
+
+    private function getWeekIdentifier(\DateTimeInterface $date): string
+    {
+        $dayOfWeek = $date->format('w');
+        $date->modify('- '.(($dayOfWeek - 1 + 7) % 7).'days');
+        $sunday = clone $date;
+        $sunday->modify('+ 6 days');
+
+        return "{$date->format('Y-m-d')}-{$sunday->format('Y-m-d')}";
     }
 
     /**

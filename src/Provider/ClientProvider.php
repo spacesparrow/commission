@@ -10,14 +10,10 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class ClientProvider implements ProviderInterface
 {
-    protected RepositoryInterface $clientRepository;
-
-    protected ClientFactoryInterface $clientFactory;
-
-    public function __construct(RepositoryInterface $clientRepository, ClientFactoryInterface $clientFactory)
-    {
-        $this->clientRepository = $clientRepository;
-        $this->clientFactory = $clientFactory;
+    public function __construct(
+        protected RepositoryInterface $clientRepository,
+        protected ClientFactoryInterface $clientFactory
+    ) {
     }
 
     public function provide($identifier, array $data): ModelInterface
