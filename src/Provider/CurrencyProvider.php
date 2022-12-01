@@ -16,7 +16,7 @@ class CurrencyProvider implements ProviderInterface
     ) {
     }
 
-    public function provide($identifier, array $data): ModelInterface
+    public function provide(string $identifier, array $data): ModelInterface
     {
         $currency = $this->currencyRepository->get($identifier)
             ?? $this->currencyFactory->createFromCodeAndRate($data['code'], $data['rate'], $data['base']);

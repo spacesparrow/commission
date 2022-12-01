@@ -19,13 +19,13 @@ class ClientProviderTest extends TestCase
      * @dataProvider dataProviderForProvideTesting
      * @covers       \App\CommissionTask\Provider\ClientProvider::provide
      */
-    public function testProvide($identifier, array $data, bool $found): void
+    public function testProvide(string $identifier, array $data, bool $found): void
     {
         $clientRepositoryMock = $this->createMock(ClientRepository::class);
         $clientFactoryMock = $this->createMock(ClientFactory::class);
 
         $client = new Client();
-        $client->setId($identifier);
+        $client->setId((int)$identifier);
         $client->setType($data['client_type']);
 
         if ($found) {
@@ -54,7 +54,7 @@ class ClientProviderTest extends TestCase
 
         static::assertInstanceOf(ModelInterface::class, $providedClient);
         static::assertInstanceOf(ClientInterface::class, $providedClient);
-        static::assertSame($identifier, $providedClient->getId());
+        static::assertSame((int)$identifier, $providedClient->getId());
         static::assertSame($identifier, $providedClient->getIdentifier());
         static::assertSame($data['client_type'], $providedClient->getType());
     }
@@ -62,10 +62,10 @@ class ClientProviderTest extends TestCase
     public function dataProviderForProvideTesting(): array
     {
         return [
-            [1, ['client_type' => ClientTypeAwareInterface::TYPE_PRIVATE], true],
-            [2, ['client_type' => ClientTypeAwareInterface::TYPE_BUSINESS], false],
-            [3, ['client_type' => ClientTypeAwareInterface::TYPE_PRIVATE], true],
-            [4, ['client_type' => ClientTypeAwareInterface::TYPE_BUSINESS], false]
+            ['1', ['client_type' => ClientTypeAwareInterface::TYPE_PRIVATE], true],
+            ['2', ['client_type' => ClientTypeAwareInterface::TYPE_BUSINESS], false],
+            ['3', ['client_type' => ClientTypeAwareInterface::TYPE_PRIVATE], true],
+            ['4', ['client_type' => ClientTypeAwareInterface::TYPE_BUSINESS], false]
         ];
     }
 }

@@ -8,15 +8,15 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 interface RepositoryInterface
 {
-    public function get($identifier): ?ModelInterface;
+    public function get(string $identifier): ?ModelInterface;
 
     public function all(): iterable;
 
-    public function has($identifier): bool;
+    public function has(string $identifier): bool;
 
     public function add(ModelInterface $element): void;
 
-    public function remove($identifier): void;
+    public function remove(string $identifier): void;
 
     public function reset(): void;
 

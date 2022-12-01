@@ -16,7 +16,7 @@ class ClientProvider implements ProviderInterface
     ) {
     }
 
-    public function provide($identifier, array $data): ModelInterface
+    public function provide(string $identifier, array $data): ModelInterface
     {
         $client = $this->clientRepository->get($identifier)
             ?? $this->clientFactory->createFromIdAndType($identifier, $data['client_type']);

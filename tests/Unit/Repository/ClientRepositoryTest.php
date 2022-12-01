@@ -149,8 +149,8 @@ class ClientRepositoryTest extends TestCase
         $clientFound->setId(1);
 
         return [
-            [1, $clientFound],
-            [-5, null]
+            ['1', $clientFound],
+            ['-5', null]
         ];
     }
 }

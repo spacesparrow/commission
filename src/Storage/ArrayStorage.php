@@ -17,7 +17,7 @@ class ArrayStorage implements StorageInterface
         }
     }
 
-    public function get(string $partition, $identifier): ?ModelInterface
+    public function get(string $partition, string $identifier): ?ModelInterface
     {
         return $this->storage[$partition][$identifier] ?? null;
     }
@@ -27,19 +27,19 @@ class ArrayStorage implements StorageInterface
         return ($partition !== null ? $this->storage[$partition] : $this->storage) ?? [];
     }
 
-    public function has(string $partition, $identifier): bool
+    public function has(string $partition, string $identifier): bool
     {
         return !empty($this->storage[$partition][$identifier]);
     }
 
-    public function add(string $partition, $identifier, ModelInterface $element): void
+    public function add(string $partition, string $identifier, ModelInterface $element): void
     {
         if (!$this->has($partition, $identifier)) {
             $this->storage[$partition][$identifier] = $element;
         }
     }
 
-    public function remove(string $partition, $identifier): void
+    public function remove(string $partition, string $identifier): void
     {
         if ($this->has($partition, $identifier)) {
             unset($this->storage[$partition][$identifier]);

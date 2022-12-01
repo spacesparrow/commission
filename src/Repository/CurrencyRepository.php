@@ -17,7 +17,7 @@ class CurrencyRepository implements RepositoryInterface
         $this->storage->initPartition(self::PARTITION_CURRENCIES);
     }
 
-    public function get($identifier): ?CurrencyInterface
+    public function get(string $identifier): ?CurrencyInterface
     {
         /** @var CurrencyInterface|null $currency */
         $currency = $this->storage->get(self::PARTITION_CURRENCIES, $identifier);
@@ -30,7 +30,7 @@ class CurrencyRepository implements RepositoryInterface
         return $this->storage->all(self::PARTITION_CURRENCIES);
     }
 
-    public function has($identifier): bool
+    public function has(string $identifier): bool
     {
         return $this->storage->has(self::PARTITION_CURRENCIES, $identifier);
     }
@@ -40,7 +40,7 @@ class CurrencyRepository implements RepositoryInterface
         $this->storage->add(self::PARTITION_CURRENCIES, $element->getIdentifier(), $element);
     }
 
-    public function remove($identifier): void
+    public function remove(string $identifier): void
     {
         $this->storage->remove(self::PARTITION_CURRENCIES, $identifier);
     }

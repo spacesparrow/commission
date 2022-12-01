@@ -8,5 +8,5 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 interface ProviderInterface
 {
-    public function provide($identifier, array $data): ModelInterface;
+    public function provide(string $identifier, array $data): ModelInterface;
 }

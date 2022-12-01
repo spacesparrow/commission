@@ -14,10 +14,10 @@ class ClientFactory implements ClientFactoryInterface
         return new Client();
     }
 
-    public function createFromIdAndType(int $id, string $type): ClientInterface
+    public function createFromIdAndType(string $id, string $type): ClientInterface
     {
         $client = $this->createNew();
-        $client->setId($id);
+        $client->setId((int) $id);
         $client->setType($type);
 
         return $client;

@@ -10,15 +10,15 @@ interface StorageInterface
 {
     public function initPartition(string $partition): void;
 
-    public function get(string $partition, $identifier): ?ModelInterface;
+    public function get(string $partition, string $identifier): ?ModelInterface;
 
     public function all(?string $partition = null): iterable;
 
-    public function has(string $partition, $identifier): bool;
+    public function has(string $partition, string $identifier): bool;
 
-    public function add(string $partition, $identifier, ModelInterface $element): void;
+    public function add(string $partition, string $identifier, ModelInterface $element): void;
 
-    public function remove(string $partition, $identifier): void;
+    public function remove(string $partition, string $identifier): void;
 
     public function reset(?string $partition = null): void;
 }

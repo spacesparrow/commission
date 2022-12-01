@@ -28,14 +28,14 @@ class ClientFactoryTest extends TestCase
      * @dataProvider dataProviderForCreateFromIdAndTypeTesting
      * @covers       \App\CommissionTask\Factory\Client\ClientFactory::createFromIdAndType
      */
-    public function testCreateFromIdAndType(int $id, string $type): void
+    public function testCreateFromIdAndType(string $id, string $type): void
     {
         $createdClient = (new ClientFactory())->createFromIdAndType($id, $type);
 
         static::assertInstanceOf(ClientInterface::class, $createdClient);
         static::assertInstanceOf(ModelInterface::class, $createdClient);
         static::assertInstanceOf(ClientTypeAwareInterface::class, $createdClient);
-        static::assertSame($id, $createdClient->getId());
+        static::assertSame((int)$id, $createdClient->getId());
         static::assertSame($type, $createdClient->getType());
         static::assertSame($id, $createdClient->getIdentifier());
     }
@@ -43,10 +43,10 @@ class ClientFactoryTest extends TestCase
     public function dataProviderForCreateFromIdAndTypeTesting(): array
     {
         return [
-            [1, ClientTypeAwareInterface::TYPE_BUSINESS],
-            [2, ClientTypeAwareInterface::TYPE_PRIVATE],
-            [3, ClientTypeAwareInterface::TYPE_PRIVATE],
-            [4, ClientTypeAwareInterface::TYPE_BUSINESS]
+            ['1', ClientTypeAwareInterface::TYPE_BUSINESS],
+            ['2', ClientTypeAwareInterface::TYPE_PRIVATE],
+            ['3', ClientTypeAwareInterface::TYPE_PRIVATE],
+            ['4', ClientTypeAwareInterface::TYPE_BUSINESS]
         ];
     }
 }

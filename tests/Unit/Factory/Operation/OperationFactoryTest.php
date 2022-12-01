@@ -40,7 +40,7 @@ class OperationFactoryTest extends TestCase
     public function testCreateFromCsvRow(array $csvRow): void
     {
         $client = new Client();
-        $client->setId($csvRow['client_id']);
+        $client->setId((int)$csvRow['client_id']);
         $client->setType($csvRow['client_type']);
         $currency = new Currency();
         $currency->setCode($csvRow['currency']);
@@ -68,7 +68,7 @@ class OperationFactoryTest extends TestCase
         static::assertSame($csvRow['processed_at'], $createdOperation->getProcessedAt()->format('Y-m-d'));
         static::assertSame($csvRow['operation_type'], $createdOperation->getType());
         static::assertSame($csvRow['amount'], $createdOperation->getAmount());
-        static::assertSame($csvRow['client_id'], $createdOperation->getClient()->getId());
+        static::assertSame((int)$csvRow['client_id'], $createdOperation->getClient()->getId());
         static::assertSame($csvRow['client_type'], $createdOperation->getClient()->getType());
         static::assertSame($csvRow['currency'], $createdOperation->getCurrency()->getCode());
     }
@@ -80,7 +80,7 @@ class OperationFactoryTest extends TestCase
                 [
                     'operation_type' => OperationTypeAwareInterface::TYPE_DEPOSIT,
                     'processed_at' => '2022-11-29',
-                    'client_id' => 1,
+                    'client_id' => '2',
                     'client_type' => ClientTypeAwareInterface::TYPE_PRIVATE,
                     'currency' => 'EUR',
                     'amount' => '100.50'
@@ -90,7 +90,7 @@ class OperationFactoryTest extends TestCase
                 [
                     'operation_type' => OperationTypeAwareInterface::TYPE_WITHDRAW,
                     'processed_at' => '2022-11-30',
-                    'client_id' => 1,
+                    'client_id' => '2',
                     'client_type' => ClientTypeAwareInterface::TYPE_PRIVATE,
                     'currency' => 'USD',
                     'amount' => '250.50'
@@ -100,7 +100,7 @@ class OperationFactoryTest extends TestCase
                 [
                     'operation_type' => OperationTypeAwareInterface::TYPE_DEPOSIT,
                     'processed_at' => '2022-12-01',
-                    'client_id' => 2,
+                    'client_id' => '2',
                     'client_type' => ClientTypeAwareInterface::TYPE_BUSINESS,
                     'currency' => 'UAH',
                     'amount' => '15675.35'
@@ -110,7 +110,7 @@ class OperationFactoryTest extends TestCase
                 [
                     'operation_type' => OperationTypeAwareInterface::TYPE_WITHDRAW,
                     'processed_at' => '2022-12-02',
-                    'client_id' => 2,
+                    'client_id' => '2',
                     'client_type' => ClientTypeAwareInterface::TYPE_BUSINESS,
                     'currency' => 'GBP',
                     'amount' => '5.50'

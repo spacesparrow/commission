@@ -17,7 +17,7 @@ class OperationRepository implements RepositoryInterface
         $this->storage->initPartition(self::PARTITION_OPERATIONS);
     }
 
-    public function get($identifier): ?OperationInterface
+    public function get(string $identifier): ?OperationInterface
     {
         /** @var OperationInterface|null $operation */
         $operation = $this->storage->get(self::PARTITION_OPERATIONS, $identifier);
@@ -30,7 +30,7 @@ class OperationRepository implements RepositoryInterface
         return $this->storage->all(self::PARTITION_OPERATIONS);
     }
 
-    public function has($identifier): bool
+    public function has(string $identifier): bool
     {
         return $this->storage->has(self::PARTITION_OPERATIONS, $identifier);
     }
@@ -40,7 +40,7 @@ class OperationRepository implements RepositoryInterface
         $this->storage->add(self::PARTITION_OPERATIONS, $element->getIdentifier(), $element);
     }
 
-    public function remove($identifier): void
+    public function remove(string $identifier): void
     {
         $this->storage->remove(self::PARTITION_OPERATIONS, $identifier);
     }

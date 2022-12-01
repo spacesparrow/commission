@@ -11,5 +11,5 @@ interface ClientFactoryInterface extends FactoryInterface
 {
     public function createNew(): ClientInterface;
 
-    public function createFromIdAndType(int $id, string $type): ClientInterface;
+    public function createFromIdAndType(string $id, string $type): ClientInterface;
 }

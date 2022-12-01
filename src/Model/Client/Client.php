@@ -30,8 +30,8 @@ class Client implements ClientInterface
         $this->type = $type;
     }
 
-    public function getIdentifier(): int
+    public function getIdentifier(): string
     {
-        return $this->id;
+        return (string) $this->id;
     }
 }

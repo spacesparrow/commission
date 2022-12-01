@@ -18,7 +18,7 @@ class ApiCurrencyReaderResponseValidator implements ValidatorInterface
     ) {
     }
 
-    public function validate($data): void
+    public function validate(array $data): void
     {
         if (empty($this->responseRequiredField)) {
             return;

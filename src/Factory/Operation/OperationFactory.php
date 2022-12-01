@@ -33,7 +33,7 @@ class OperationFactory implements OperationFactoryInterface
         $operation->setProcessedAt(new \DateTime($csvRow['processed_at']));
         $operation->setAmount($csvRow['amount']);
         /** @var ClientInterface $client */
-        $client = $this->clientProvider->provide((int) $csvRow['client_id'], ['client_type' => $csvRow['client_type']]);
+        $client = $this->clientProvider->provide($csvRow['client_id'], ['client_type' => $csvRow['client_type']]);
         $operation->setClient($client);
         /** @var CurrencyInterface $currency */
         $currency = $this->currencyProvider->provide(

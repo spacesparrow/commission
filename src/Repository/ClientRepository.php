@@ -17,7 +17,7 @@ class ClientRepository implements RepositoryInterface
         $this->storage->initPartition(self::PARTITION_CLIENTS);
     }
 
-    public function get($identifier): ?ClientInterface
+    public function get(string $identifier): ?ClientInterface
     {
         /** @var ClientInterface|null $client */
         $client = $this->storage->get(self::PARTITION_CLIENTS, $identifier);
@@ -30,7 +30,7 @@ class ClientRepository implements RepositoryInterface
         return $this->storage->all(self::PARTITION_CLIENTS);
     }
 
-    public function has($identifier): bool
+    public function has(string $identifier): bool
     {
         return $this->storage->has(self::PARTITION_CLIENTS, $identifier);
     }
@@ -40,7 +40,7 @@ class ClientRepository implements RepositoryInterface
         $this->storage->add(self::PARTITION_CLIENTS, $element->getIdentifier(), $element);
     }
 
-    public function remove($identifier): void
+    public function remove(string $identifier): void
     {
         $this->storage->remove(self::PARTITION_CLIENTS, $identifier);
     }
