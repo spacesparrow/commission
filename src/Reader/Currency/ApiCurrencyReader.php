@@ -46,7 +46,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface
         return $currenciesData;
     }
 
-    protected function parse(string $currenciesData): void
+    private function parse(string $currenciesData): void
     {
         try {
             $decodedData = json_decode($currenciesData, true, 512, JSON_THROW_ON_ERROR);

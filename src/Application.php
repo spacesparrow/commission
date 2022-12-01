@@ -10,11 +10,8 @@ use App\CommissionTask\Processor\ProcessorInterface;
 
 final class Application
 {
-    private ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     public function run(array $argv): void
