@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Validator\Reader;
 
-use App\CommissionTask\Exception\Validator\Reader\MissedSupportedClientTypesException;
-use App\CommissionTask\Exception\Validator\Reader\MissedSupportedOperationTypesException;
 use App\CommissionTask\Exception\Validator\Reader\UnsupportedClientTypeException;
 use App\CommissionTask\Exception\Validator\Reader\UnsupportedOperationTypeException;
 use App\CommissionTask\Validator\ValidatorInterface;
@@ -18,10 +16,6 @@ class FileInputReaderValidator implements ValidatorInterface
 
     public function validate(array $data): void
     {
-        if (empty($this->clientTypes)) {
-            throw new MissedSupportedClientTypesException();
-        }
-
         if (!in_array($data['client_type'], $this->clientTypes, true)) {
             $message = sprintf(
                 UnsupportedClientTypeException::MESSAGE_PATTERN,
@@ -29,10 +23,6 @@ class FileInputReaderValidator implements ValidatorInterface
                 implode(',', $this->clientTypes)
             );
             throw new UnsupportedClientTypeException($message);
-        }
-
-        if (empty($this->operationTypes)) {
-            throw new MissedSupportedOperationTypesException();
         }
 
         if (!in_array($data['operation_type'], $this->operationTypes, true)) {
