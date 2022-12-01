@@ -48,7 +48,8 @@ final class ApplicationTest extends TestCase
                 $container->get('app.factory.currency'),
                 $container->get('app.validator.currency_response'),
                 $container->get('app.repository.currency'),
-                $config
+                $container->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
+                $container->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
             ])
             ->onlyMethods(['request'])
             ->getMock();

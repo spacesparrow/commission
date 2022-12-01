@@ -7,23 +7,18 @@ namespace App\CommissionTask\Reader\Currency;
 use App\CommissionTask\Exception\Reader\CommunicationException;
 use App\CommissionTask\Exception\Reader\InvalidDataException;
 use App\CommissionTask\Factory\Core\CurrencyFactoryInterface;
-use App\CommissionTask\Kernel\ConfigAwareInterface;
-use App\CommissionTask\Kernel\ConfigAwareTrait;
-use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Validator\ValidatorInterface;
 
-class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
+class ApiCurrencyReader implements CurrencyReaderInterface
 {
-    use ConfigAwareTrait;
-
     public function __construct(
         protected CurrencyFactoryInterface $currencyFactory,
         protected ValidatorInterface $validator,
         protected RepositoryInterface $currencyRepository,
-        ConfigInterface $config
+        protected string $apiUrl,
+        protected int $maxAttempts
     ) {
-        $this->setConfig($config);
     }
 
     public function read(): void
@@ -35,14 +30,12 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getEnvVarByName('CURRENCY_API_URL'));
+        curl_setopt($curl, CURLOPT_URL, $this->apiUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-        $remainingAttempts = $this->getConfig()->getConfigParamByName('parameters.reader.max_attempts');
 
         do {
             $currenciesData = curl_exec($curl);
-        } while ($currenciesData === false && --$remainingAttempts);
+        } while ($currenciesData === false && --$this->maxAttempts);
 
         curl_close($curl);
 

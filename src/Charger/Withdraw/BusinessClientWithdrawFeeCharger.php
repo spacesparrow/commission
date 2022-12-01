@@ -6,8 +6,6 @@ namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Kernel\ConfigAwareTrait;
-use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
@@ -18,14 +16,10 @@ use Brick\Money\Exception\UnknownCurrencyException;
 
 class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
-    use ConfigAwareTrait;
-
-    protected CurrencyConverterInterface $currencyConverter;
-
-    public function __construct(ConfigInterface $config, CurrencyConverterInterface $currencyConverter)
-    {
-        $this->setConfig($config);
-        $this->currencyConverter = $currencyConverter;
+    public function __construct(
+        protected CurrencyConverterInterface $currencyConverter,
+        protected float $feePercent
+    ) {
     }
 
     /**
@@ -34,10 +28,7 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
     public function charge(OperationInterface $operation): void
     {
         $operatingAmount = MoneyUtil::createMoneyFromOperation($operation);
-        $fee = $operatingAmount->multipliedBy(
-            $this->config->getConfigParamByName('parameters.fee.withdraw.business.percent'),
-            RoundingMode::UP
-        );
+        $fee = $operatingAmount->multipliedBy($this->feePercent, RoundingMode::UP);
 
         OutputUtil::writeLn($fee->getAmount());
     }

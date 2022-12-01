@@ -112,8 +112,21 @@ class Container implements ContainerInterface
 
     private function registerValidators(): void
     {
-        $this->set('app.validator.currency_response', new ApiCurrencyReaderResponseValidator($this->get('app.config')));
-        $this->set('app.validator.file_input', new FileInputReaderValidator($this->get('app.config')));
+        $this->set(
+            'app.validator.currency_response',
+            new ApiCurrencyReaderResponseValidator(
+                $this->get('app.config')->getConfigParamByName('parameters.reader.response_required_fields'),
+                $this->get('app.config')->getConfigParamByName('parameters.currency.supported'),
+                $this->get('app.config')->getConfigParamByName('parameters.currency.base_currency_code')
+            )
+        );
+        $this->set(
+            'app.validator.file_input',
+            new FileInputReaderValidator(
+                $this->get('app.config')->getConfigParamByName('parameters.client.types'),
+                $this->get('app.config')->getConfigParamByName('parameters.operation.types')
+            )
+        );
     }
 
     private function registerReaders(): void
@@ -124,7 +137,8 @@ class Container implements ContainerInterface
                 $this->get('app.factory.currency'),
                 $this->get('app.validator.currency_response'),
                 $this->get('app.repository.currency'),
-                $this->get('app.config')
+                $this->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
+                $this->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
             )
         );
         $this->set('app.reader.input.file', new FileInputReader($this->get('app.validator.file_input')));
@@ -134,18 +148,27 @@ class Container implements ContainerInterface
     {
         $this->set(
             'app.charger.fee.deposit',
-            new DepositFeeCharger($this->get('app.config'), $this->get('app.converter.currency'))
+            new DepositFeeCharger(
+                $this->get('app.converter.currency'),
+                $this->get('app.config')->getConfigParamByName('parameters.fee.deposit.percent')
+            )
         );
         $this->set(
             'app.charger.fee.withdraw_business',
-            new BusinessClientWithdrawFeeCharger($this->get('app.config'), $this->get('app.converter.currency'))
+            new BusinessClientWithdrawFeeCharger(
+                $this->get('app.converter.currency'),
+                $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.business.percent')
+            )
         );
         $this->set(
             'app.charger.fee.withdraw_private',
             new PrivateClientWithdrawFeeCharger(
-                $this->get('app.config'),
                 $this->get('app.converter.currency'),
-                $this->get('app.repository.operation')
+                $this->get('app.repository.operation'),
+                $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.percent'),
+                $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.free_count_per_week'),
+                $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),
+                $this->get('app.config')->getConfigParamByName('parameters.currency.base_currency_code')
             )
         );
     }

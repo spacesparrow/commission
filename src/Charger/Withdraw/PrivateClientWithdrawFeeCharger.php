@@ -6,8 +6,6 @@ namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Kernel\ConfigAwareTrait;
-use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
@@ -22,20 +20,14 @@ use Brick\Money\Money;
 
 class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
-    use ConfigAwareTrait;
-
-    protected CurrencyConverterInterface $currencyConverter;
-
-    protected RepositoryInterface $operationRepository;
-
     public function __construct(
-        ConfigInterface $config,
-        CurrencyConverterInterface $currencyConverter,
-        RepositoryInterface $operationRepository
+        protected CurrencyConverterInterface $currencyConverter,
+        protected RepositoryInterface $operationRepository,
+        protected float $feePercent,
+        protected float $freeCountPerWeek,
+        protected int $freeAmountPerWeek,
+        protected string $baseCurrencyCode
     ) {
-        $this->setConfig($config);
-        $this->currencyConverter = $currencyConverter;
-        $this->operationRepository = $operationRepository;
     }
 
     /**
@@ -44,26 +36,23 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
      */
     public function charge(OperationInterface $operation): void
     {
-        $feePercent = $this->getConfig()->getConfigParamByName('parameters.fee.withdraw.private.percent');
-        $freeCountPerWeek = (int) $this->getConfig()->getConfigParamByName('parameters.fee.withdraw.private.free_count_per_week');
         /** @var array $clientOperationsInWeek */
         $clientOperationsInWeek = $this->operationRepository->findUsingClosure($this->getClosureForSearch($operation));
 
-        if ($freeCountPerWeek < count($clientOperationsInWeek) + 1) {
+        if ($this->freeCountPerWeek < count($clientOperationsInWeek) + 1) {
             $feeAmount = MoneyUtil::createMoneyFromOperation($operation)
-                ->multipliedBy($feePercent, RoundingMode::UP)
+                ->multipliedBy($this->feePercent, RoundingMode::UP)
                 ->getAmount();
             OutputUtil::writeLn($feeAmount);
 
             return;
         }
 
-        $baseCurrencyCode = $this->getConfig()->getConfigParamByName('parameters.currency.base_currency_code');
         $operationAmount = MoneyUtil::createMoneyFromOperation($operation)->getAmount();
         $feeChargingAmount = $this->getFeeChargingAmount(
             $operationAmount,
             $clientOperationsInWeek,
-            $baseCurrencyCode,
+            $this->baseCurrencyCode,
             $operation->getCurrency()->getCode()
         );
 
@@ -75,7 +64,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         }
 
         $originalCurrencyFee = Money::of(
-            $feeChargingAmount->multipliedBy($feePercent),
+            $feeChargingAmount->multipliedBy($this->feePercent),
             $operation->getCurrency()->getCode(),
             null,
             RoundingMode::UP
@@ -124,7 +113,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         string $originalCurrencyCode
     ): BigDecimal {
         $freeAmountPerWeek = Money::of(
-            $this->getConfig()->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),
+            $this->freeAmountPerWeek,
             $baseCurrencyCode
         );
         $alreadySpent = Money::zero($baseCurrencyCode);
