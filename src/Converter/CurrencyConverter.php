@@ -22,11 +22,8 @@ class CurrencyConverter implements CurrencyConverterInterface
 {
     private const DEFAULT_SCALE = 2;
 
-    protected RepositoryInterface $currencyRepository;
-
-    public function __construct(RepositoryInterface $currencyRepository)
+    public function __construct(protected RepositoryInterface $currencyRepository)
     {
-        $this->currencyRepository = $currencyRepository;
     }
 
     /**

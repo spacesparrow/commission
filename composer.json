@@ -14,10 +14,10 @@
 		}
 	},
 	"require": {
-		"php": ">=7.4",
-		"ext-bcmath": "^7.4",
-		"ext-curl": "^7.4",
-		"ext-json": "^7.4",
+		"php": ">=8.0",
+		"ext-bcmath": "^8.0",
+		"ext-curl": "^8.0",
+		"ext-json": "^8.0",
 		"brick/money": "^0.7.0",
 		"symfony/dotenv": "^5.4",
 		"symfony/yaml": "^5.4"

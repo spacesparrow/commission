@@ -10,18 +10,11 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class OperationProcessor implements ProcessorInterface
 {
-    /** @var iterable|FeeChargerInterface[] */
-    private iterable $chargers;
-
-    private RepositoryInterface $operationRepository;
-
     /**
      * @param iterable|FeeChargerInterface[] $chargers
      */
-    public function __construct(iterable $chargers, RepositoryInterface $operationRepository)
+    public function __construct(protected iterable $chargers, protected RepositoryInterface $operationRepository)
     {
-        $this->chargers = $chargers;
-        $this->operationRepository = $operationRepository;
     }
 
     public function process(OperationInterface $operation): void

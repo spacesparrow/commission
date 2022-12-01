@@ -8,17 +8,9 @@ interface ConfigInterface
 {
     public function load(): void;
 
-    public function loadEnvVars(): void;
+    public function getEnvVarByName(string $envVarName): mixed;
 
-    public function loadConfigFile(): void;
+    public function getConfigParamByName(string $paramName): mixed;
 
-    public function getEnvVarsFilePath(): string;
-
-    public function getConfigFilePath(): string;
-
-    public function getEnvVarByName(string $envVarName);
-
-    public function getConfigParamByName(string $paramName);
-
-    public function resolveConfigKeys(string $key);
+    public function getAllConfigValues(): mixed;
 }

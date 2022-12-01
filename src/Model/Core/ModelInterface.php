@@ -6,5 +6,5 @@ namespace App\CommissionTask\Model\Core;
 
 interface ModelInterface
 {
-    public function getIdentifier();
+    public function getIdentifier(): string;
 }

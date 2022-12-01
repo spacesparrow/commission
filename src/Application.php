@@ -5,30 +5,23 @@ declare(strict_types=1);
 namespace App\CommissionTask;
 
 use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
-use App\CommissionTask\Kernel\Container;
-use App\CommissionTask\Kernel\ContainerAwareInterface;
-use App\CommissionTask\Kernel\ContainerAwareTrait;
 use App\CommissionTask\Kernel\ContainerInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
 
-final class Application implements ContainerAwareInterface
+final class Application
 {
-    use ContainerAwareTrait;
-
-    public function __construct(?ContainerInterface $container = null)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->setContainer($container ?? new Container());
-        $this->getContainer()->init();
     }
 
-    public function run(int $argc, array $argv): void
+    public function run(array $argv): void
     {
-        $this->getContainer()->get('app.reader.currency')->read();
+        $this->container->get('app.reader.currency')->read();
         /** @var OperationFactoryInterface $operationFactory */
-        $operationFactory = $this->getContainer()->get('app.factory.operation');
-        $operationsData = $this->getContainer()->get('app.reader.input.file')->read($argv[1]);
+        $operationFactory = $this->container->get('app.factory.operation');
+        $operationsData = $this->container->get('app.reader.input.file')->read($argv[1]);
         /** @var ProcessorInterface $operationProcessor */
-        $operationProcessor = $this->getContainer()->get('app.processor.operation');
+        $operationProcessor = $this->container->get('app.processor.operation');
 
         foreach ($operationsData as $operationsDatum) {
             $operation = $operationFactory->createFromCsvRow($operationsDatum);

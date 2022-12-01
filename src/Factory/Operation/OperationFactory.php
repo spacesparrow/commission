@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Factory\Operation;
 
+use App\CommissionTask\Exception\Factory\UnsupportedOperationCurrencyException;
+use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Core\CurrencyInterface;
 use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Provider\ProviderInterface;
+use App\CommissionTask\Repository\RepositoryInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    protected ProviderInterface $currencyProvider;
-
-    protected ProviderInterface $clientProvider;
-
-    public function __construct(ProviderInterface $currencyProvider, ProviderInterface $clientProvider)
-    {
-        $this->currencyProvider = $currencyProvider;
-        $this->clientProvider = $clientProvider;
+    public function __construct(
+        protected RepositoryInterface $clientRepository,
+        protected RepositoryInterface $currencyRepository
+    ) {
     }
 
     public function createNew(): OperationInterface
@@ -36,16 +34,36 @@ class OperationFactory implements OperationFactoryInterface
         $operation->setType($csvRow['operation_type']);
         $operation->setProcessedAt(new \DateTime($csvRow['processed_at']));
         $operation->setAmount($csvRow['amount']);
-        /** @var ClientInterface $client */
-        $client = $this->clientProvider->provide((int) $csvRow['client_id'], ['client_type' => $csvRow['client_type']]);
-        $operation->setClient($client);
-        /** @var CurrencyInterface $currency */
-        $currency = $this->currencyProvider->provide(
-            $csvRow['currency'],
-            ['code' => $csvRow['currency'], 'rate' => '0', 'base' => false]
-        );
-        $operation->setCurrency($currency);
+        $operation->setClient($this->getClient($csvRow['client_id'], $csvRow['client_type']));
+        $operation->setCurrency($this->getCurrency($csvRow['currency']));
 
         return $operation;
+    }
+
+    private function getClient(string $clientId, string $clientType): ClientInterface
+    {
+        $client = $this->clientRepository->get($clientId);
+
+        if (!$client) {
+            $client = new Client();
+            $client->setId((int) $clientId);
+            $client->setType($clientType);
+            $this->clientRepository->add($client);
+        }
+
+        return $client;
+    }
+
+    private function getCurrency(string $currencyCode): CurrencyInterface
+    {
+        /** @var CurrencyInterface|null $currency */
+        $currency = $this->currencyRepository->get($currencyCode);
+
+        if (!$currency) {
+            $message = sprintf(UnsupportedOperationCurrencyException::MESSAGE_PATTERN, $currencyCode);
+            throw new UnsupportedOperationCurrencyException($message);
+        }
+
+        return $currency;
     }
 }

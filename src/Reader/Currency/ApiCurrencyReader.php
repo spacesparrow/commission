@@ -6,33 +6,18 @@ namespace App\CommissionTask\Reader\Currency;
 
 use App\CommissionTask\Exception\Reader\CommunicationException;
 use App\CommissionTask\Exception\Reader\InvalidDataException;
-use App\CommissionTask\Factory\Core\CurrencyFactoryInterface;
-use App\CommissionTask\Kernel\ConfigAwareInterface;
-use App\CommissionTask\Kernel\ConfigAwareTrait;
-use App\CommissionTask\Kernel\ConfigInterface;
+use App\CommissionTask\Model\Core\Currency;
 use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Validator\ValidatorInterface;
 
-class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
+class ApiCurrencyReader implements CurrencyReaderInterface
 {
-    use ConfigAwareTrait;
-
-    protected CurrencyFactoryInterface $currencyFactory;
-
-    protected ValidatorInterface $validator;
-
-    protected RepositoryInterface $currencyRepository;
-
     public function __construct(
-        CurrencyFactoryInterface $currencyFactory,
-        ValidatorInterface $validator,
-        RepositoryInterface $currencyRepository,
-        ConfigInterface $config
+        protected ValidatorInterface $validator,
+        protected RepositoryInterface $currencyRepository,
+        protected string $apiUrl,
+        protected int $maxAttempts
     ) {
-        $this->currencyFactory = $currencyFactory;
-        $this->validator = $validator;
-        $this->currencyRepository = $currencyRepository;
-        $this->setConfig($config);
     }
 
     public function read(): void
@@ -44,14 +29,12 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
     {
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_URL, $this->getConfig()->getEnvVarByName('CURRENCY_API_URL'));
+        curl_setopt($curl, CURLOPT_URL, $this->apiUrl);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-
-        $remainingAttempts = $this->getConfig()->getConfigParamByName('parameters.reader.max_attempts');
 
         do {
             $currenciesData = curl_exec($curl);
-        } while ($currenciesData === false && --$remainingAttempts);
+        } while ($currenciesData === false && --$this->maxAttempts);
 
         curl_close($curl);
 
@@ -62,22 +45,21 @@ class ApiCurrencyReader implements CurrencyReaderInterface, ConfigAwareInterface
         return $currenciesData;
     }
 
-    protected function parse(string $currenciesData): void
+    private function parse(string $currenciesData): void
     {
         try {
             $decodedData = json_decode($currenciesData, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (\JsonException) {
             throw new InvalidDataException();
         }
 
         $this->validator->validate($decodedData);
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
-            $currency = $this->currencyFactory->createFromCodeAndRate(
-                $currencyCode,
-                (string) $rate,
-                $currencyCode === $decodedData['base']
-            );
+            $currency = new Currency();
+            $currency->setCode($currencyCode);
+            $currency->setRate((string) $rate);
+            $currency->setBase($currencyCode === $decodedData['base']);
             $this->currencyRepository->add($currency);
         }
     }

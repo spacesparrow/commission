@@ -11,7 +11,7 @@ docker-compose up -d
 docker-compose exec app composer install
 docker-compose exec app composer run post-root-package-install
 ```
-2. Set API URL at `.env` file.
+2. Set API URL at `.env` file with value from the task description.
 ```shell
 CURRENCY_API_URL=https://api.example.com
 ```

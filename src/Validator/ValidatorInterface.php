@@ -6,5 +6,5 @@ namespace App\CommissionTask\Validator;
 
 interface ValidatorInterface
 {
-    public function validate($data): void;
+    public function validate(array $data): void;
 }

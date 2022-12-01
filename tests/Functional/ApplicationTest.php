@@ -26,14 +26,14 @@ final class ApplicationTest extends TestCase
         $container = new Container();
         $container->init();
         $config = $this->getMockBuilder(Config::class)
-            ->onlyMethods(['getConfigArray', 'getEnvVarByName'])
+            ->onlyMethods(['getAllConfigValues', 'getEnvVarByName'])
             ->getMock();
         $config
             ->method('getEnvVarByName')
             ->with('CURRENCY_API_URL')
             ->willReturn('https://api.example.com');
         $config
-            ->method('getConfigArray')
+            ->method('getAllConfigValues')
             ->willReturn(ConfigDataFixture::getTestData());
 
         $fileInputReader = $this->createStub(FileInputReader::class);
@@ -45,18 +45,18 @@ final class ApplicationTest extends TestCase
             ->getMockBuilder(ApiCurrencyReader::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([
-                $container->get('app.factory.currency'),
                 $container->get('app.validator.currency_response'),
                 $container->get('app.repository.currency'),
-                $config
+                $container->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
+                $container->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
             ])
             ->onlyMethods(['request'])
             ->getMock();
         $currencyReader->method('request')->willReturn(ApiCurrencyDataFixture::getTestData());
 
-        $container->replace('app.reader.input.file', $fileInputReader);
-        $container->replace('app.config', $config);
-        $container->replace('app.reader.currency', $currencyReader);
+        $container->set('app.reader.input.file', $fileInputReader);
+        $container->set('app.config', $config);
+        $container->set('app.reader.currency', $currencyReader);
 
         $this->app = new Application($container);
     }
@@ -68,7 +68,7 @@ final class ApplicationTest extends TestCase
     public function testRun(string $pathToFile, string $expectedOutput): void
     {
         $argv = ['script.php', $pathToFile];
-        $this->app->run(count($argv), $argv);
+        $this->app->run($argv);
 
         $this->expectOutputString($expectedOutput);
     }
