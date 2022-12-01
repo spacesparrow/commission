@@ -30,24 +30,9 @@ class CurrencyRepository implements RepositoryInterface
         return $this->storage->all(self::PARTITION_CURRENCIES);
     }
 
-    public function has(string $identifier): bool
-    {
-        return $this->storage->has(self::PARTITION_CURRENCIES, $identifier);
-    }
-
     public function add(ModelInterface $element): void
     {
         $this->storage->add(self::PARTITION_CURRENCIES, $element->getIdentifier(), $element);
-    }
-
-    public function remove(string $identifier): void
-    {
-        $this->storage->remove(self::PARTITION_CURRENCIES, $identifier);
-    }
-
-    public function reset(): void
-    {
-        $this->storage->reset(self::PARTITION_CURRENCIES);
     }
 
     public function findUsingClosure(callable $closure): iterable

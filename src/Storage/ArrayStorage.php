@@ -38,16 +38,4 @@ class ArrayStorage implements StorageInterface
             $this->storage[$partition][$identifier] = $element;
         }
     }
-
-    public function remove(string $partition, string $identifier): void
-    {
-        if ($this->has($partition, $identifier)) {
-            unset($this->storage[$partition][$identifier]);
-        }
-    }
-
-    public function reset(?string $partition = null): void
-    {
-        $partition ? $this->storage[$partition] = [] : $this->storage = [];
-    }
 }

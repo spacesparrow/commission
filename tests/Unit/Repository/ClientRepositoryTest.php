@@ -59,21 +59,6 @@ class ClientRepositoryTest extends TestCase
 
     /**
      * @dataProvider dataProviderGeneral
-     * @covers       \App\CommissionTask\Repository\ClientRepository::has
-     */
-    public function testHas($identifier, ?ModelInterface $model): void
-    {
-        $clientRepository = new ClientRepository(new ArrayStorage());
-
-        if ($model) {
-            $clientRepository->add($model);
-        }
-
-        static::assertSame($model !== null, $clientRepository->has($identifier));
-    }
-
-    /**
-     * @dataProvider dataProviderGeneral
      * @covers       \App\CommissionTask\Repository\ClientRepository::add
      */
     public function testAdd($identifier, ?ModelInterface $model): void
@@ -85,62 +70,8 @@ class ClientRepositoryTest extends TestCase
             $clientRepository->add($model);
         }
 
-        static::assertSame($model !== null, $clientRepository->has($identifier));
         static::assertEquals($model, $clientRepository->get($identifier));
         static::assertCount($model ? 1 : 0, $clientRepository->all());
-    }
-
-    /**
-     * @dataProvider dataProviderGeneral
-     * @covers       \App\CommissionTask\Repository\ClientRepository::remove
-     */
-    public function testRemove($identifier, ?ModelInterface $model): void
-    {
-        $clientRepository = new ClientRepository(new ArrayStorage());
-
-        if ($model) {
-            $clientRepository->add($model);
-        }
-
-        static::assertSame($model !== null, $clientRepository->has($identifier));
-        static::assertEquals($model, $clientRepository->get($identifier));
-        static::assertCount($model ? 1 : 0, $clientRepository->all());
-
-        if ($model) {
-            $clientRepository->remove($identifier);
-        }
-
-        static::assertFalse($clientRepository->has($identifier));
-        static::assertEmpty($clientRepository->get($identifier));
-        static::assertEmpty($clientRepository->all());
-    }
-
-    /**
-     * @dataProvider dataProviderGeneral
-     * @covers \App\CommissionTask\Storage\ArrayStorage::reset
-     */
-    public function testReset($identifier, $model): void
-    {
-        $clientRepository = new ClientRepository(new ArrayStorage());
-
-        if (!empty($model)) {
-            $clientRepository->add($model);
-        }
-
-        /** @var array $got */
-        $got = $clientRepository->all();
-        static::assertIsArray($got);
-
-        if (!empty($model)) {
-            static::assertNotEmpty($got);
-            static::assertArrayHasKey($identifier, $got);
-        } else {
-            static::assertEmpty($got);
-        }
-
-        $clientRepository->reset();
-
-        static::assertEmpty($clientRepository->all());
     }
 
     public function dataProviderGeneral(): array

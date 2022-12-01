@@ -12,13 +12,7 @@ interface RepositoryInterface
 
     public function all(): iterable;
 
-    public function has(string $identifier): bool;
-
     public function add(ModelInterface $element): void;
-
-    public function remove(string $identifier): void;
-
-    public function reset(): void;
 
     public function findUsingClosure(callable $closure): iterable;
 }

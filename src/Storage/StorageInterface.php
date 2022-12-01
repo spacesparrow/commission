@@ -17,8 +17,4 @@ interface StorageInterface
     public function has(string $partition, string $identifier): bool;
 
     public function add(string $partition, string $identifier, ModelInterface $element): void;
-
-    public function remove(string $partition, string $identifier): void;
-
-    public function reset(?string $partition = null): void;
 }
