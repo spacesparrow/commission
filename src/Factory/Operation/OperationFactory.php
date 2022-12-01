@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\CommissionTask\Factory\Operation;
 
 use App\CommissionTask\Exception\Factory\UnsupportedOperationCurrencyException;
-use App\CommissionTask\Factory\Client\ClientFactoryInterface;
+use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Core\CurrencyInterface;
 use App\CommissionTask\Model\Operation\Operation;
@@ -16,8 +16,7 @@ class OperationFactory implements OperationFactoryInterface
 {
     public function __construct(
         protected RepositoryInterface $clientRepository,
-        protected RepositoryInterface $currencyRepository,
-        protected ClientFactoryInterface $clientFactory
+        protected RepositoryInterface $currencyRepository
     ) {
     }
 
@@ -43,9 +42,14 @@ class OperationFactory implements OperationFactoryInterface
 
     private function getClient(string $clientId, string $clientType): ClientInterface
     {
-        $client = $this->clientRepository->get($clientId)
-            ?? $this->clientFactory->createFromIdAndType($clientId, $clientType);
-        $this->clientRepository->add($client);
+        $client = $this->clientRepository->get($clientId);
+
+        if (!$client) {
+            $client = new Client();
+            $client->setId((int) $clientId);
+            $client->setType($clientType);
+            $this->clientRepository->add($client);
+        }
 
         return $client;
     }

@@ -19,24 +19,57 @@ class Config implements ConfigInterface
         $this->loadConfigFile();
     }
 
-    public function loadEnvVars(): void
+    public function getEnvVarByName(string $envVarName): mixed
+    {
+        return $_ENV[$envVarName];
+    }
+
+    public function getConfigParamByName(string $paramName): mixed
+    {
+        $keys = $this->resolveConfigKeys($paramName);
+        $value = $this->getAllConfigValues();
+
+        while ($keys && $value !== []) {
+            $key = array_shift($keys);
+
+            $value = $value[$key] ?? null;
+        }
+
+        return $value;
+    }
+
+    public function getAllConfigValues(): array
+    {
+        return $this->config;
+    }
+
+    private function resolveConfigKeys(string $key): array
+    {
+        if (empty($key)) {
+            return [];
+        }
+
+        return explode(self::CONFIG_SEPARATOR, $key);
+    }
+
+    private function loadEnvVars(): void
     {
         (new Dotenv())->load($this->getEnvVarsFilePath());
     }
 
-    public function loadConfigFile(): void
+    private function loadConfigFile(): void
     {
         $this->config = Yaml::parseFile($this->getConfigFilePath()) ?? [];
     }
 
-    public function getEnvVarsFilePath(): string
+    private function getEnvVarsFilePath(): string
     {
         $unresolvedPath = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'.env';
 
         return realpath($unresolvedPath);
     }
 
-    public function getConfigFilePath(): string
+    private function getConfigFilePath(): string
     {
         $unresolvedPath = __DIR__
             .DIRECTORY_SEPARATOR
@@ -49,38 +82,5 @@ class Config implements ConfigInterface
             .'config.yaml';
 
         return realpath($unresolvedPath);
-    }
-
-    public function getEnvVarByName(string $envVarName)
-    {
-        return $_ENV[$envVarName];
-    }
-
-    public function getConfigParamByName(string $paramName)
-    {
-        $keys = $this->resolveConfigKeys($paramName);
-        $value = $this->getConfigArray();
-
-        while ($keys && $value !== []) {
-            $key = array_shift($keys);
-
-            $value = $value[$key] ?? null;
-        }
-
-        return $value;
-    }
-
-    public function resolveConfigKeys(string $key)
-    {
-        if (empty($key)) {
-            return [];
-        }
-
-        return explode(self::CONFIG_SEPARATOR, $key);
-    }
-
-    protected function getConfigArray(): array
-    {
-        return $this->config;
     }
 }

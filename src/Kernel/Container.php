@@ -9,8 +9,6 @@ use App\CommissionTask\Charger\Withdraw\BusinessClientWithdrawFeeCharger;
 use App\CommissionTask\Charger\Withdraw\PrivateClientWithdrawFeeCharger;
 use App\CommissionTask\Converter\CurrencyConverter;
 use App\CommissionTask\Exception\Kernel\UndefinedInstanceException;
-use App\CommissionTask\Factory\Client\ClientFactory;
-use App\CommissionTask\Factory\Core\CurrencyFactory;
 use App\CommissionTask\Factory\Operation\OperationFactory;
 use App\CommissionTask\Processor\OperationProcessor;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
@@ -85,14 +83,11 @@ class Container implements ContainerInterface
 
     private function registerFactories(): void
     {
-        $this->set('app.factory.currency', new CurrencyFactory());
-        $this->set('app.factory.client', new ClientFactory());
         $this->set(
             'app.factory.operation',
             new OperationFactory(
                 $this->get('app.repository.client'),
-                $this->get('app.repository.currency'),
-                $this->get('app.factory.client')
+                $this->get('app.repository.currency')
             )
         );
     }
@@ -121,7 +116,6 @@ class Container implements ContainerInterface
         $this->set(
             'app.reader.currency',
             new ApiCurrencyReader(
-                $this->get('app.factory.currency'),
                 $this->get('app.validator.currency_response'),
                 $this->get('app.repository.currency'),
                 $this->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),

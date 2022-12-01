@@ -26,14 +26,14 @@ final class ApplicationTest extends TestCase
         $container = new Container();
         $container->init();
         $config = $this->getMockBuilder(Config::class)
-            ->onlyMethods(['getConfigArray', 'getEnvVarByName'])
+            ->onlyMethods(['getAllConfigValues', 'getEnvVarByName'])
             ->getMock();
         $config
             ->method('getEnvVarByName')
             ->with('CURRENCY_API_URL')
             ->willReturn('https://api.example.com');
         $config
-            ->method('getConfigArray')
+            ->method('getAllConfigValues')
             ->willReturn(ConfigDataFixture::getTestData());
 
         $fileInputReader = $this->createStub(FileInputReader::class);
@@ -45,7 +45,6 @@ final class ApplicationTest extends TestCase
             ->getMockBuilder(ApiCurrencyReader::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([
-                $container->get('app.factory.currency'),
                 $container->get('app.validator.currency_response'),
                 $container->get('app.repository.currency'),
                 $container->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),

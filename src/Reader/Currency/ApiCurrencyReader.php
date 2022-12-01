@@ -6,14 +6,13 @@ namespace App\CommissionTask\Reader\Currency;
 
 use App\CommissionTask\Exception\Reader\CommunicationException;
 use App\CommissionTask\Exception\Reader\InvalidDataException;
-use App\CommissionTask\Factory\Core\CurrencyFactoryInterface;
+use App\CommissionTask\Model\Core\Currency;
 use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Validator\ValidatorInterface;
 
 class ApiCurrencyReader implements CurrencyReaderInterface
 {
     public function __construct(
-        protected CurrencyFactoryInterface $currencyFactory,
         protected ValidatorInterface $validator,
         protected RepositoryInterface $currencyRepository,
         protected string $apiUrl,
@@ -57,11 +56,10 @@ class ApiCurrencyReader implements CurrencyReaderInterface
         $this->validator->validate($decodedData);
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
-            $currency = $this->currencyFactory->createFromCodeAndRate(
-                $currencyCode,
-                (string) $rate,
-                $currencyCode === $decodedData['base']
-            );
+            $currency = new Currency();
+            $currency->setCode($currencyCode);
+            $currency->setRate((string) $rate);
+            $currency->setBase($currencyCode === $decodedData['base']);
             $this->currencyRepository->add($currency);
         }
     }
