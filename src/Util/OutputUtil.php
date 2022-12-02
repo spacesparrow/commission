@@ -6,7 +6,7 @@ namespace App\CommissionTask\Util;
 
 class OutputUtil
 {
-    public static function writeLn(\Stringable $value): void
+    public static function writeLn(\Stringable|string $value): void
     {
         echo $value.PHP_EOL;
     }
