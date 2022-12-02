@@ -7,7 +7,6 @@ namespace App\CommissionTask\Charger\Deposit;
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Util\MoneyUtil;
 use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\RoundingMode;
@@ -34,6 +33,6 @@ class DepositFeeCharger implements FeeChargerInterface
 
     public function supports(OperationInterface $operation): bool
     {
-        return $operation->getType() === OperationTypeAwareInterface::TYPE_DEPOSIT;
+        return $operation->getType() === OperationInterface::TYPE_DEPOSIT;
     }
 }

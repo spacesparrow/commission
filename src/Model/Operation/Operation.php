@@ -17,7 +17,7 @@ class Operation implements OperationInterface
 
     protected string $type;
 
-    private ClientInterface  $client;
+    protected ClientInterface  $client;
 
     public function getCurrency(): CurrencyInterface
     {

@@ -6,9 +6,8 @@ namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
+use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Util\MoneyUtil;
 use App\CommissionTask\Util\OutputUtil;
@@ -75,8 +74,8 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
     public function supports(OperationInterface $operation): bool
     {
-        return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === ClientTypeAwareInterface::TYPE_PRIVATE;
+        return $operation->getType() === OperationInterface::TYPE_WITHDRAW
+            && $operation->getClient()->getType() === ClientInterface::TYPE_PRIVATE;
     }
 
     private function getClosureForSearch(OperationInterface $operation): callable
@@ -86,7 +85,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         $week = $this->getWeekIdentifier($processedDate);
 
         return function (OperationInterface $operation) use ($client, $week) {
-            return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
+            return $operation->getType() === OperationInterface::TYPE_WITHDRAW
                 && $operation->getClient() === $client
                 && $this->getWeekIdentifier($operation->getProcessedAt()) === $week;
         };
