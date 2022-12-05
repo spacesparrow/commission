@@ -20,17 +20,12 @@ class OperationFactory implements OperationFactoryInterface
     ) {
     }
 
-    public function createNew(): OperationInterface
-    {
-        return new Operation();
-    }
-
     /**
      * @throws \Exception
      */
     public function createFromCsvRow(array $csvRow): OperationInterface
     {
-        $operation = $this->createNew();
+        $operation = new Operation();
         $operation->setType($csvRow['operation_type']);
         $operation->setProcessedAt(new \DateTime($csvRow['processed_at']));
         $operation->setAmount($csvRow['amount']);

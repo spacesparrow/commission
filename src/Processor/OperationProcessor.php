@@ -11,15 +11,14 @@ use App\CommissionTask\Repository\RepositoryInterface;
 class OperationProcessor implements ProcessorInterface
 {
     /**
-     * @param iterable|FeeChargerInterface[] $chargers
+     * @param FeeChargerInterface[] $chargers
      */
-    public function __construct(protected iterable $chargers, protected RepositoryInterface $operationRepository)
+    public function __construct(protected array $chargers, protected RepositoryInterface $operationRepository)
     {
     }
 
     public function process(OperationInterface $operation): void
     {
-        /** @var FeeChargerInterface $charger */
         foreach ($this->chargers as $charger) {
             if ($charger->supports($operation)) {
                 $charger->charge($operation);
