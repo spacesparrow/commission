@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\CommissionTask\Model\Operation;
 
 use App\CommissionTask\Model\Client\ClientInterface;
-use App\CommissionTask\Model\Core\CurrencyInterface;
 use App\CommissionTask\Model\Core\ModelInterface;
 
 interface OperationInterface extends ModelInterface
@@ -29,7 +28,7 @@ interface OperationInterface extends ModelInterface
 
     public function setType(string $type): void;
 
-    public function getCurrency(): CurrencyInterface;
+    public function getCurrency(): string;
 
-    public function setCurrency(CurrencyInterface $currency): void;
+    public function setCurrency(string $currency): void;
 }

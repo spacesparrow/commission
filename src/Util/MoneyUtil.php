@@ -18,7 +18,7 @@ class MoneyUtil
     {
         return Money::of(
             $operation->getAmount(),
-            $operation->getCurrency()->getCode(),
+            $operation->getCurrency(),
             null,
             RoundingMode::UP
         );

@@ -42,7 +42,10 @@ class Container implements ContainerInterface
         $this->registerReaders();
 
         // Register currency converter
-        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.repository.currency')));
+        $this->set(
+            'app.converter.currency',
+            new CurrencyConverter($this->get('app.repository.currency'), $this->get('app.reader.currency'))
+        );
 
         $this->registerFeeChargers();
 
@@ -83,13 +86,7 @@ class Container implements ContainerInterface
 
     private function registerFactories(): void
     {
-        $this->set(
-            'app.factory.operation',
-            new OperationFactory(
-                $this->get('app.repository.client'),
-                $this->get('app.repository.currency')
-            )
-        );
+        $this->set('app.factory.operation', new OperationFactory($this->get('app.repository.client')));
     }
 
     private function registerValidators(): void

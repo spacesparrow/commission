@@ -52,11 +52,11 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             $operationAmount,
             $clientOperationsInWeek,
             $this->baseCurrencyCode,
-            $operation->getCurrency()->getCode()
+            $operation->getCurrency()
         );
 
         if ($feeChargingAmount->isNegativeOrZero()) {
-            $zeroFeeAmount = Money::zero($operation->getCurrency()->getCode())->getAmount();
+            $zeroFeeAmount = Money::zero($operation->getCurrency())->getAmount();
             OutputUtil::writeLn($zeroFeeAmount);
 
             return;
@@ -64,7 +64,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
         $originalCurrencyFee = Money::of(
             $feeChargingAmount->multipliedBy($this->feePercent),
-            $operation->getCurrency()->getCode(),
+            $operation->getCurrency(),
             null,
             RoundingMode::UP
         );
@@ -122,7 +122,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             $alreadySpent = $alreadySpent->plus(
                 Money::of(
                     $this->currencyConverter->convert(
-                        $operationInWeek->getCurrency()->getCode(),
+                        $operationInWeek->getCurrency(),
                         $baseCurrencyCode,
                         $operationInWeek->getAmount()
                     ),

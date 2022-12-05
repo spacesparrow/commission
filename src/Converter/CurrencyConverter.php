@@ -7,6 +7,7 @@ namespace App\CommissionTask\Converter;
 use App\CommissionTask\Exception\Converter\NoBaseCurrencyException;
 use App\CommissionTask\Exception\Converter\TooManyBaseCurrenciesException;
 use App\CommissionTask\Model\Core\CurrencyInterface;
+use App\CommissionTask\Reader\Currency\CurrencyReaderInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
@@ -22,8 +23,10 @@ class CurrencyConverter implements CurrencyConverterInterface
 {
     private const DEFAULT_SCALE = 2;
 
-    public function __construct(protected RepositoryInterface $currencyRepository)
-    {
+    public function __construct(
+        protected RepositoryInterface $currencyRepository,
+        protected CurrencyReaderInterface $currencyReader
+    ) {
     }
 
     /**
@@ -34,6 +37,10 @@ class CurrencyConverter implements CurrencyConverterInterface
     {
         if ($from === $to) {
             return BigDecimal::of($amount);
+        }
+
+        if (empty($this->currencyRepository->all())) {
+            $this->currencyReader->read();
         }
 
         return $this->getConverter()->convert(
