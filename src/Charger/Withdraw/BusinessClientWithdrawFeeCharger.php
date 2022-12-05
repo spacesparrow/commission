@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
-use App\CommissionTask\Converter\CurrencyConverterInterface;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Util\MoneyUtil;
@@ -15,10 +14,8 @@ use Brick\Money\Exception\UnknownCurrencyException;
 
 class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
-    public function __construct(
-        protected CurrencyConverterInterface $currencyConverter,
-        protected float $feePercent
-    ) {
+    public function __construct(private float $feePercent)
+    {
     }
 
     /**

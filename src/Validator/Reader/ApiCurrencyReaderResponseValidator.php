@@ -12,9 +12,9 @@ use App\CommissionTask\Validator\ValidatorInterface;
 class ApiCurrencyReaderResponseValidator implements ValidatorInterface
 {
     public function __construct(
-        protected array $responseRequiredField,
-        protected array $supportedCurrencies,
-        protected string $baseCurrency
+        private array $responseRequiredField,
+        private array $supportedCurrencies,
+        private string $baseCurrency
     ) {
     }
 

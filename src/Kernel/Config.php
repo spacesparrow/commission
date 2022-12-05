@@ -11,7 +11,7 @@ class Config implements ConfigInterface
 {
     private const CONFIG_SEPARATOR = '.';
 
-    protected array $config = [];
+    private array $config = [];
 
     public function load(): void
     {

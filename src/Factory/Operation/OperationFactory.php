@@ -12,7 +12,7 @@ use App\CommissionTask\Repository\RepositoryInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    public function __construct(protected RepositoryInterface $clientRepository)
+    public function __construct(private RepositoryInterface $clientRepository)
     {
     }
 

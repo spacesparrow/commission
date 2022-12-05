@@ -13,10 +13,10 @@ use App\CommissionTask\Validator\ValidatorInterface;
 class ApiCurrencyReader implements CurrencyReaderInterface
 {
     public function __construct(
-        protected ValidatorInterface $validator,
-        protected RepositoryInterface $currencyRepository,
-        protected string $apiUrl,
-        protected int $maxAttempts
+        private ValidatorInterface $validator,
+        private RepositoryInterface $currencyRepository,
+        private string $apiUrl,
+        private int $maxAttempts
     ) {
     }
 

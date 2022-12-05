@@ -22,7 +22,7 @@ use App\CommissionTask\Validator\Reader\FileInputReaderValidator;
 
 class Container implements ContainerInterface
 {
-    protected array $instances = [];
+    private array $instances = [];
 
     public function init(): void
     {
@@ -127,14 +127,12 @@ class Container implements ContainerInterface
         $this->set(
             'app.charger.fee.deposit',
             new DepositFeeCharger(
-                $this->get('app.converter.currency'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.deposit.percent')
             )
         );
         $this->set(
             'app.charger.fee.withdraw_business',
             new BusinessClientWithdrawFeeCharger(
-                $this->get('app.converter.currency'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.business.percent')
             )
         );

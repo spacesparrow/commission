@@ -6,11 +6,11 @@ namespace App\CommissionTask\Model\Core;
 
 class Currency implements CurrencyInterface
 {
-    protected string $code;
+    private string $code;
 
-    protected string $rate;
+    private string $rate;
 
-    protected bool $base;
+    private bool $base;
 
     public function getCode(): string
     {

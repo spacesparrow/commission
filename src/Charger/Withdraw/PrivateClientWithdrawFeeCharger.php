@@ -20,12 +20,12 @@ use Brick\Money\Money;
 class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(
-        protected CurrencyConverterInterface $currencyConverter,
-        protected RepositoryInterface $operationRepository,
-        protected float $feePercent,
-        protected float $freeCountPerWeek,
-        protected int $freeAmountPerWeek,
-        protected string $baseCurrencyCode
+        private CurrencyConverterInterface $currencyConverter,
+        private RepositoryInterface $operationRepository,
+        private float $feePercent,
+        private float $freeCountPerWeek,
+        private int $freeAmountPerWeek,
+        private string $baseCurrencyCode
     ) {
     }
 
