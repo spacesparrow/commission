@@ -10,6 +10,7 @@ use App\CommissionTask\Charger\Withdraw\PrivateClientWithdrawFeeCharger;
 use App\CommissionTask\Converter\CurrencyConverter;
 use App\CommissionTask\Exception\Kernel\UndefinedInstanceException;
 use App\CommissionTask\Factory\Operation\OperationFactory;
+use App\CommissionTask\Output\ConsoleOutput;
 use App\CommissionTask\Processor\OperationProcessor;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
 use App\CommissionTask\Reader\Input\FileInputReader;
@@ -61,6 +62,8 @@ class Container implements ContainerInterface
                 $this->get('app.repository.operation')
             )
         );
+
+        $this->set('app.output.console', new ConsoleOutput());
     }
 
     public function get(string $key): object

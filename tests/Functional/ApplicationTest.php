@@ -47,7 +47,12 @@ final class ApplicationTest extends TestCase
         $container->set('app.charger.fee.withdraw_private', $privateClientWithdrawFeeCharger);
         $container->set('app.processor.operation', $operationProcessor);
 
-        $this->app = new Application($container->get('app.factory.operation'), $fileInputReader, $operationProcessor);
+        $this->app = new Application(
+            $container->get('app.factory.operation'),
+            $fileInputReader,
+            $operationProcessor,
+            $container->get('app.output.console')
+        );
     }
 
     /**

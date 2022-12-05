@@ -17,14 +17,15 @@ class OperationProcessor implements ProcessorInterface
     {
     }
 
-    public function process(OperationInterface $operation): void
+    public function process(OperationInterface $operation): \Stringable|string
     {
         foreach ($this->chargers as $charger) {
             if ($charger->supports($operation)) {
-                $charger->charge($operation);
+                $fee = $charger->charge($operation);
+                $this->operationRepository->add($operation);
+
+                return $fee;
             }
         }
-
-        $this->operationRepository->add($operation);
     }
 }

@@ -9,8 +9,6 @@ use App\CommissionTask\Converter\CurrencyConverterInterface;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
-use App\CommissionTask\Util\MoneyUtil;
-use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\MoneyMismatchException;
@@ -33,21 +31,26 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
      * @throws UnknownCurrencyException
      * @throws MoneyMismatchException
      */
-    public function charge(OperationInterface $operation): void
+    public function charge(OperationInterface $operation): \Stringable|string
     {
         /** @var array $clientOperationsInWeek */
         $clientOperationsInWeek = $this->operationRepository->findUsingClosure($this->getClosureForSearch($operation));
 
         if ($this->freeCountPerWeek < count($clientOperationsInWeek) + 1) {
-            $feeAmount = MoneyUtil::createMoneyFromOperation($operation)
-                ->multipliedBy($this->feePercent, RoundingMode::UP)
-                ->getAmount();
-            OutputUtil::writeLn($feeAmount);
-
-            return;
+            return Money::of(
+                $operation->getAmount(),
+                $operation->getCurrency(),
+                null,
+                RoundingMode::UP
+            )->multipliedBy($this->feePercent, RoundingMode::UP)->getAmount();
         }
 
-        $operationAmount = MoneyUtil::createMoneyFromOperation($operation)->getAmount();
+        $operationAmount = Money::of(
+            $operation->getAmount(),
+            $operation->getCurrency(),
+            null,
+            RoundingMode::UP
+        )->getAmount();
         $feeChargingAmount = $this->getFeeChargingAmount(
             $operationAmount,
             $clientOperationsInWeek,
@@ -56,20 +59,15 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         );
 
         if ($feeChargingAmount->isNegativeOrZero()) {
-            $zeroFeeAmount = Money::zero($operation->getCurrency())->getAmount();
-            OutputUtil::writeLn($zeroFeeAmount);
-
-            return;
+            return Money::zero($operation->getCurrency())->getAmount();
         }
 
-        $originalCurrencyFee = Money::of(
+        return Money::of(
             $feeChargingAmount->multipliedBy($this->feePercent),
             $operation->getCurrency(),
             null,
             RoundingMode::UP
-        );
-
-        OutputUtil::writeLn($originalCurrencyFee->getAmount());
+        )->getAmount();
     }
 
     public function supports(OperationInterface $operation): bool
@@ -139,7 +137,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         $convertedAmount = $this->currencyConverter->convert(
             $originalCurrencyCode,
             $baseCurrencyCode,
-            $operationAmount->__toString()
+            (string) $operationAmount
         );
 
         $willBeSpent = $alreadySpent->plus($convertedAmount, RoundingMode::UP);
@@ -148,7 +146,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             return $this->currencyConverter->convert(
                 $baseCurrencyCode,
                 $originalCurrencyCode,
-                $willBeSpent->minus($freeAmountPerWeek, RoundingMode::UP)->getAmount()->__toString()
+                (string) $willBeSpent->minus($freeAmountPerWeek, RoundingMode::UP)->getAmount()
             );
         }
 

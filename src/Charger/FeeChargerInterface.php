@@ -8,7 +8,7 @@ use App\CommissionTask\Model\Operation\OperationInterface;
 
 interface FeeChargerInterface
 {
-    public function charge(OperationInterface $operation): void;
+    public function charge(OperationInterface $operation): \Stringable|string;
 
     public function supports(OperationInterface $operation): bool;
 }
