@@ -10,7 +10,7 @@ use App\CommissionTask\Validator\ValidatorInterface;
 
 class FileInputReaderValidator implements ValidatorInterface
 {
-    public function __construct(protected array $clientTypes, protected array $operationTypes)
+    public function __construct(private array $clientTypes, private array $operationTypes)
     {
     }
 

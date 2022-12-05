@@ -5,27 +5,25 @@ declare(strict_types=1);
 namespace App\CommissionTask;
 
 use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
-use App\CommissionTask\Kernel\ContainerInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
+use App\CommissionTask\Reader\Input\InputReaderInterface;
 
 final class Application
 {
-    public function __construct(private ContainerInterface $container)
-    {
+    public function __construct(
+        private OperationFactoryInterface $operationFactory,
+        private InputReaderInterface $inputReader,
+        private ProcessorInterface $operationProcessor
+    ) {
     }
 
     public function run(array $argv): void
     {
-        $this->container->get('app.reader.currency')->read();
-        /** @var OperationFactoryInterface $operationFactory */
-        $operationFactory = $this->container->get('app.factory.operation');
-        $operationsData = $this->container->get('app.reader.input.file')->read($argv[1]);
-        /** @var ProcessorInterface $operationProcessor */
-        $operationProcessor = $this->container->get('app.processor.operation');
+        $operationsData = $this->inputReader->read($argv[1]);
 
         foreach ($operationsData as $operationsDatum) {
-            $operation = $operationFactory->createFromCsvRow($operationsDatum);
-            $operationProcessor->process($operation);
+            $operation = $this->operationFactory->createFromCsvRow($operationsDatum);
+            $this->operationProcessor->process($operation);
         }
     }
 }

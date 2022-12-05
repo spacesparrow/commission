@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace App\CommissionTask\Model\Operation;
 
 use App\CommissionTask\Model\Client\ClientInterface;
-use App\CommissionTask\Model\Core\CurrencyInterface;
 
 class Operation implements OperationInterface
 {
-    protected CurrencyInterface $currency;
+    protected string $currency;
 
     protected \DateTimeInterface $processedAt;
 
@@ -17,14 +16,14 @@ class Operation implements OperationInterface
 
     protected string $type;
 
-    private ClientInterface  $client;
+    protected ClientInterface  $client;
 
-    public function getCurrency(): CurrencyInterface
+    public function getCurrency(): string
     {
         return $this->currency;
     }
 
-    public function setCurrency(CurrencyInterface $currency): void
+    public function setCurrency(string $currency): void
     {
         $this->currency = $currency;
     }

@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
-use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
+use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Util\MoneyUtil;
 use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\RoundingMode;
@@ -16,10 +14,8 @@ use Brick\Money\Exception\UnknownCurrencyException;
 
 class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
-    public function __construct(
-        protected CurrencyConverterInterface $currencyConverter,
-        protected float $feePercent
-    ) {
+    public function __construct(private float $feePercent)
+    {
     }
 
     /**
@@ -35,7 +31,7 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 
     public function supports(OperationInterface $operation): bool
     {
-        return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === ClientTypeAwareInterface::TYPE_BUSINESS;
+        return $operation->getType() === OperationInterface::TYPE_WITHDRAW
+            && $operation->getClient()->getType() === ClientInterface::TYPE_BUSINESS;
     }
 }

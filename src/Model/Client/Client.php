@@ -6,9 +6,9 @@ namespace App\CommissionTask\Model\Client;
 
 class Client implements ClientInterface
 {
-    protected int $id;
+    private int $id;
 
-    protected string $type;
+    private string $type;
 
     public function getId(): int
     {

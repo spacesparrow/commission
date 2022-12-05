@@ -8,7 +8,5 @@ use App\CommissionTask\Model\Operation\OperationInterface;
 
 interface OperationFactoryInterface
 {
-    public function createNew(): OperationInterface;
-
     public function createFromCsvRow(array $csvRow): OperationInterface;
 }

@@ -22,7 +22,7 @@ use App\CommissionTask\Validator\Reader\FileInputReaderValidator;
 
 class Container implements ContainerInterface
 {
-    protected array $instances = [];
+    private array $instances = [];
 
     public function init(): void
     {
@@ -42,7 +42,10 @@ class Container implements ContainerInterface
         $this->registerReaders();
 
         // Register currency converter
-        $this->set('app.converter.currency', new CurrencyConverter($this->get('app.repository.currency')));
+        $this->set(
+            'app.converter.currency',
+            new CurrencyConverter($this->get('app.repository.currency'), $this->get('app.reader.currency'))
+        );
 
         $this->registerFeeChargers();
 
@@ -83,13 +86,7 @@ class Container implements ContainerInterface
 
     private function registerFactories(): void
     {
-        $this->set(
-            'app.factory.operation',
-            new OperationFactory(
-                $this->get('app.repository.client'),
-                $this->get('app.repository.currency')
-            )
-        );
+        $this->set('app.factory.operation', new OperationFactory($this->get('app.repository.client')));
     }
 
     private function registerValidators(): void
@@ -130,14 +127,12 @@ class Container implements ContainerInterface
         $this->set(
             'app.charger.fee.deposit',
             new DepositFeeCharger(
-                $this->get('app.converter.currency'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.deposit.percent')
             )
         );
         $this->set(
             'app.charger.fee.withdraw_business',
             new BusinessClientWithdrawFeeCharger(
-                $this->get('app.converter.currency'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.business.percent')
             )
         );

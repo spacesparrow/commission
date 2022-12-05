@@ -12,7 +12,7 @@ class CurrencyRepository implements RepositoryInterface
 {
     private const PARTITION_CURRENCIES = 'currencies';
 
-    public function __construct(protected StorageInterface $storage)
+    public function __construct(private StorageInterface $storage)
     {
         $this->storage->initPartition(self::PARTITION_CURRENCIES);
     }

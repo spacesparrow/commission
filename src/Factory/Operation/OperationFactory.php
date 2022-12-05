@@ -4,25 +4,16 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Factory\Operation;
 
-use App\CommissionTask\Exception\Factory\UnsupportedOperationCurrencyException;
 use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Client\ClientInterface;
-use App\CommissionTask\Model\Core\CurrencyInterface;
 use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    public function __construct(
-        protected RepositoryInterface $clientRepository,
-        protected RepositoryInterface $currencyRepository
-    ) {
-    }
-
-    public function createNew(): OperationInterface
+    public function __construct(private RepositoryInterface $clientRepository)
     {
-        return new Operation();
     }
 
     /**
@@ -30,12 +21,12 @@ class OperationFactory implements OperationFactoryInterface
      */
     public function createFromCsvRow(array $csvRow): OperationInterface
     {
-        $operation = $this->createNew();
+        $operation = new Operation();
         $operation->setType($csvRow['operation_type']);
         $operation->setProcessedAt(new \DateTime($csvRow['processed_at']));
         $operation->setAmount($csvRow['amount']);
         $operation->setClient($this->getClient($csvRow['client_id'], $csvRow['client_type']));
-        $operation->setCurrency($this->getCurrency($csvRow['currency']));
+        $operation->setCurrency($csvRow['currency']);
 
         return $operation;
     }
@@ -52,18 +43,5 @@ class OperationFactory implements OperationFactoryInterface
         }
 
         return $client;
-    }
-
-    private function getCurrency(string $currencyCode): CurrencyInterface
-    {
-        /** @var CurrencyInterface|null $currency */
-        $currency = $this->currencyRepository->get($currencyCode);
-
-        if (!$currency) {
-            $message = sprintf(UnsupportedOperationCurrencyException::MESSAGE_PATTERN, $currencyCode);
-            throw new UnsupportedOperationCurrencyException($message);
-        }
-
-        return $currency;
     }
 }

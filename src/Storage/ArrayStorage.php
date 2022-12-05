@@ -8,7 +8,7 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 class ArrayStorage implements StorageInterface
 {
-    protected array $storage = [];
+    private array $storage = [];
 
     public function initPartition(string $partition): void
     {

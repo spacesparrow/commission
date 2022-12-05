@@ -12,7 +12,7 @@ class ClientRepository implements RepositoryInterface
 {
     private const PARTITION_CLIENTS = 'clients';
 
-    public function __construct(protected StorageInterface $storage)
+    public function __construct(private StorageInterface $storage)
     {
         $this->storage->initPartition(self::PARTITION_CLIENTS);
     }

@@ -6,9 +6,8 @@ namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Model\Client\ClientTypeAwareInterface;
+use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Model\Operation\OperationTypeAwareInterface;
 use App\CommissionTask\Repository\RepositoryInterface;
 use App\CommissionTask\Util\MoneyUtil;
 use App\CommissionTask\Util\OutputUtil;
@@ -21,12 +20,12 @@ use Brick\Money\Money;
 class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(
-        protected CurrencyConverterInterface $currencyConverter,
-        protected RepositoryInterface $operationRepository,
-        protected float $feePercent,
-        protected float $freeCountPerWeek,
-        protected int $freeAmountPerWeek,
-        protected string $baseCurrencyCode
+        private CurrencyConverterInterface $currencyConverter,
+        private RepositoryInterface $operationRepository,
+        private float $feePercent,
+        private float $freeCountPerWeek,
+        private int $freeAmountPerWeek,
+        private string $baseCurrencyCode
     ) {
     }
 
@@ -53,11 +52,11 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             $operationAmount,
             $clientOperationsInWeek,
             $this->baseCurrencyCode,
-            $operation->getCurrency()->getCode()
+            $operation->getCurrency()
         );
 
         if ($feeChargingAmount->isNegativeOrZero()) {
-            $zeroFeeAmount = Money::zero($operation->getCurrency()->getCode())->getAmount();
+            $zeroFeeAmount = Money::zero($operation->getCurrency())->getAmount();
             OutputUtil::writeLn($zeroFeeAmount);
 
             return;
@@ -65,7 +64,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
         $originalCurrencyFee = Money::of(
             $feeChargingAmount->multipliedBy($this->feePercent),
-            $operation->getCurrency()->getCode(),
+            $operation->getCurrency(),
             null,
             RoundingMode::UP
         );
@@ -75,8 +74,8 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
     public function supports(OperationInterface $operation): bool
     {
-        return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === ClientTypeAwareInterface::TYPE_PRIVATE;
+        return $operation->getType() === OperationInterface::TYPE_WITHDRAW
+            && $operation->getClient()->getType() === ClientInterface::TYPE_PRIVATE;
     }
 
     private function getClosureForSearch(OperationInterface $operation): callable
@@ -86,7 +85,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         $week = $this->getWeekIdentifier($processedDate);
 
         return function (OperationInterface $operation) use ($client, $week) {
-            return $operation->getType() === OperationTypeAwareInterface::TYPE_WITHDRAW
+            return $operation->getType() === OperationInterface::TYPE_WITHDRAW
                 && $operation->getClient() === $client
                 && $this->getWeekIdentifier($operation->getProcessedAt()) === $week;
         };
@@ -123,7 +122,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
             $alreadySpent = $alreadySpent->plus(
                 Money::of(
                     $this->currencyConverter->convert(
-                        $operationInWeek->getCurrency()->getCode(),
+                        $operationInWeek->getCurrency(),
                         $baseCurrencyCode,
                         $operationInWeek->getAmount()
                     ),
