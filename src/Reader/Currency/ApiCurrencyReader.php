@@ -56,10 +56,11 @@ class ApiCurrencyReader implements CurrencyReaderInterface
         $this->validator->validate($decodedData);
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
-            $currency = new Currency();
-            $currency->setCode($currencyCode);
-            $currency->setRate((string) $rate);
-            $currency->setBase($currencyCode === $decodedData['base']);
+            $currency = new Currency(
+                code: $currencyCode,
+                rate: (string) $rate,
+                base: $currencyCode === $decodedData['base']
+            );
             $this->currencyRepository->add($currency);
         }
     }

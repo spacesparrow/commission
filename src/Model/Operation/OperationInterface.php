@@ -14,21 +14,11 @@ interface OperationInterface extends ModelInterface
 
     public function getClient(): ClientInterface;
 
-    public function setClient(ClientInterface $client): void;
-
     public function getProcessedAt(): \DateTimeInterface;
-
-    public function setProcessedAt(\DateTimeInterface $processedAt): void;
 
     public function getAmount(): string;
 
-    public function setAmount(string $amount): void;
-
     public function getType(): string;
 
-    public function setType(string $type): void;
-
     public function getCurrency(): string;
-
-    public function setCurrency(string $currency): void;
 }

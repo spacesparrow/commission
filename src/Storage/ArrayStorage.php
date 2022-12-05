@@ -8,6 +8,10 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 class ArrayStorage implements StorageInterface
 {
+    public const PARTITION_CLIENTS = 'clients';
+    public const PARTITION_CURRENCIES = 'currencies';
+    public const PARTITION_OPERATIONS = 'operations';
+
     private array $storage = [];
 
     public function initPartition(string $partition): void

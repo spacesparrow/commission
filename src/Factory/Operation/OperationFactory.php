@@ -21,14 +21,13 @@ class OperationFactory implements OperationFactoryInterface
      */
     public function createFromCsvRow(array $csvRow): OperationInterface
     {
-        $operation = new Operation();
-        $operation->setType($csvRow['operation_type']);
-        $operation->setProcessedAt(new \DateTime($csvRow['processed_at']));
-        $operation->setAmount($csvRow['amount']);
-        $operation->setClient($this->getClient($csvRow['client_id'], $csvRow['client_type']));
-        $operation->setCurrency($csvRow['currency']);
-
-        return $operation;
+        return new Operation(
+            currency: $csvRow['currency'],
+            processedAt: new \DateTime($csvRow['processed_at']),
+            amount: $csvRow['amount'],
+            type: $csvRow['operation_type'],
+            client: $this->getClient($csvRow['client_id'], $csvRow['client_type'])
+        );
     }
 
     private function getClient(string $clientId, string $clientType): ClientInterface
@@ -36,9 +35,7 @@ class OperationFactory implements OperationFactoryInterface
         $client = $this->clientRepository->get($clientId);
 
         if (!$client) {
-            $client = new Client();
-            $client->setId((int) $clientId);
-            $client->setType($clientType);
+            $client = new Client(id: (int) $clientId, type: $clientType);
             $this->clientRepository->add($client);
         }
 

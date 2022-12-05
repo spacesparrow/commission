@@ -13,9 +13,5 @@ interface ClientInterface extends ModelInterface
 
     public function getId(): int;
 
-    public function setId(int $id): void;
-
     public function getType(): string;
-
-    public function setType(string $type): void;
 }
