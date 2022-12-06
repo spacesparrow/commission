@@ -4,16 +4,20 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Model\Operation;
 
-use App\CommissionTask\Model\Client\ClientInterface;
+use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Core\ModelInterface;
 
-class Operation implements OperationInterface
+class Operation implements ModelInterface
 {
+    public const TYPE_DEPOSIT = 'deposit';
+    public const TYPE_WITHDRAW = 'withdraw';
+
     public function __construct(
         private string $currency,
         private \DateTimeInterface $processedAt,
         private string $amount,
         private string $type,
-        private ClientInterface $client
+        private Client $client
     ) {
     }
 
@@ -37,7 +41,7 @@ class Operation implements OperationInterface
         return $this->type;
     }
 
-    public function getClient(): ClientInterface
+    public function getClient(): Client
     {
         return $this->client;
     }

@@ -6,7 +6,7 @@ namespace App\CommissionTask\Converter;
 
 use App\CommissionTask\Exception\Converter\NoBaseCurrencyException;
 use App\CommissionTask\Exception\Converter\TooManyBaseCurrenciesException;
-use App\CommissionTask\Model\Core\CurrencyInterface;
+use App\CommissionTask\Model\Core\Currency;
 use App\CommissionTask\Reader\Currency\CurrencyReaderInterface;
 use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
@@ -19,7 +19,7 @@ use Brick\Money\ExchangeRateProvider\BaseCurrencyProvider;
 use Brick\Money\ExchangeRateProvider\ConfigurableProvider;
 use Brick\Money\Money;
 
-class CurrencyConverter implements CurrencyConverterInterface
+class CurrencyConverter
 {
     private const DEFAULT_SCALE = 2;
 
@@ -51,11 +51,11 @@ class CurrencyConverter implements CurrencyConverterInterface
         )->getAmount();
     }
 
-    private function getBaseCurrency(): CurrencyInterface
+    private function getBaseCurrency(): Currency
     {
-        /** @var array|CurrencyInterface[] $currencies */
+        /** @var array|Currency[] $currencies */
         $currencies = $this->storage->all(StorageInterface::PARTITION_CURRENCIES);
-        $filtered = array_filter($currencies, static function (CurrencyInterface $currency) {
+        $filtered = array_filter($currencies, static function (Currency $currency) {
             return $currency->isBase();
         });
 
@@ -74,10 +74,10 @@ class CurrencyConverter implements CurrencyConverterInterface
     {
         $baseCurrency = $this->getBaseCurrency();
         $provider = new ConfigurableProvider();
-        /** @var array|CurrencyInterface[] $currencies */
+        /** @var array|Currency[] $currencies */
         $currencies = $this->storage->all(StorageInterface::PARTITION_CURRENCIES);
 
-        /** @var CurrencyInterface $currency */
+        /** @var Currency $currency */
         foreach ($currencies as $currency) {
             $provider->setExchangeRate($baseCurrency->getCode(), $currency->getCode(), $currency->getRate());
         }

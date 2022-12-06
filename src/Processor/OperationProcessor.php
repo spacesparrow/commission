@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\CommissionTask\Processor;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
-use App\CommissionTask\Model\Operation\OperationInterface;
+use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Storage\StorageInterface;
 
 class OperationProcessor implements ProcessorInterface
@@ -17,7 +17,7 @@ class OperationProcessor implements ProcessorInterface
     {
     }
 
-    public function process(OperationInterface $operation): \Stringable|string
+    public function process(Operation $operation): \Stringable|string
     {
         foreach ($this->chargers as $charger) {
             if ($charger->supports($operation)) {

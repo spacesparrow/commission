@@ -7,7 +7,7 @@ namespace App\CommissionTask\Kernel;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Yaml\Yaml;
 
-class Config implements ConfigInterface
+class Config
 {
     private const CONFIG_SEPARATOR = '.';
 

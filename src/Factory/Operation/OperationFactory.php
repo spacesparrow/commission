@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace App\CommissionTask\Factory\Operation;
 
 use App\CommissionTask\Model\Client\Client;
-use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\Operation;
-use App\CommissionTask\Model\Operation\OperationInterface;
 use App\CommissionTask\Storage\StorageInterface;
 
-class OperationFactory implements OperationFactoryInterface
+class OperationFactory
 {
     public function __construct(private StorageInterface $storage)
     {
@@ -19,7 +17,7 @@ class OperationFactory implements OperationFactoryInterface
     /**
      * @throws \Exception
      */
-    public function createFromCsvRow(array $csvRow): OperationInterface
+    public function createFromCsvRow(array $csvRow): Operation
     {
         return new Operation(
             currency: $csvRow['currency'],
@@ -30,7 +28,7 @@ class OperationFactory implements OperationFactoryInterface
         );
     }
 
-    private function getClient(string $clientId, string $clientType): ClientInterface
+    private function getClient(string $clientId, string $clientType): Client
     {
         $client = $this->storage->get(StorageInterface::PARTITION_CLIENTS, $clientId);
 

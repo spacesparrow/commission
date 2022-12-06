@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Model\Client;
 
-class Client implements ClientInterface
+use App\CommissionTask\Model\Core\ModelInterface;
+
+class Client implements ModelInterface
 {
+    public const TYPE_PRIVATE = 'private';
+    public const TYPE_BUSINESS = 'business';
+
     public function __construct(private int $id, private string $type)
     {
     }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\CommissionTask\Charger\Deposit;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
-use App\CommissionTask\Model\Operation\OperationInterface;
+use App\CommissionTask\Model\Operation\Operation;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
@@ -19,7 +19,7 @@ class DepositFeeCharger implements FeeChargerInterface
     /**
      * @throws UnknownCurrencyException
      */
-    public function charge(OperationInterface $operation): \Stringable|string
+    public function charge(Operation $operation): \Stringable|string
     {
         return Money::of(
             $operation->getAmount(),
@@ -29,8 +29,8 @@ class DepositFeeCharger implements FeeChargerInterface
         )->multipliedBy($this->feePercent, RoundingMode::UP)->getAmount();
     }
 
-    public function supports(OperationInterface $operation): bool
+    public function supports(Operation $operation): bool
     {
-        return $operation->getType() === OperationInterface::TYPE_DEPOSIT;
+        return $operation->getType() === Operation::TYPE_DEPOSIT;
     }
 }
