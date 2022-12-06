@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\CommissionTask;
 
-use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
+use App\CommissionTask\Factory\Operation\OperationFactory;
 use App\CommissionTask\Output\OutputInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
 use App\CommissionTask\Reader\Input\InputReaderInterface;
@@ -12,7 +12,7 @@ use App\CommissionTask\Reader\Input\InputReaderInterface;
 final class Application
 {
     public function __construct(
-        private OperationFactoryInterface $operationFactory,
+        private OperationFactory $operationFactory,
         private InputReaderInterface $inputReader,
         private ProcessorInterface $operationProcessor,
         private OutputInterface $output

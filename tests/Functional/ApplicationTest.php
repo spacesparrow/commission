@@ -8,9 +8,7 @@ use App\CommissionTask\Application;
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Charger\Withdraw\PrivateClientWithdrawFeeCharger;
 use App\CommissionTask\Converter\CurrencyConverter;
-use App\CommissionTask\Converter\CurrencyConverterInterface;
 use App\CommissionTask\Kernel\Config;
-use App\CommissionTask\Kernel\ConfigInterface;
 use App\CommissionTask\Kernel\Container;
 use App\CommissionTask\Kernel\ContainerInterface;
 use App\CommissionTask\Processor\OperationProcessor;
@@ -93,7 +91,7 @@ final class ApplicationTest extends TestCase
         ];
     }
 
-    private function mockConfig(): ConfigInterface
+    private function mockConfig(): Config
     {
         $config = $this->getMockBuilder(Config::class)
             ->onlyMethods(['getAllConfigValues', 'getEnvVarByName'])
@@ -138,7 +136,7 @@ final class ApplicationTest extends TestCase
     private function mockCurrencyConverter(
         ContainerInterface $container,
         CurrencyReaderInterface $currencyReader
-    ): CurrencyConverterInterface {
+    ): CurrencyConverter {
         return $this->getMockBuilder(CurrencyConverter::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([$container->get('app.storage.array'), $currencyReader])
@@ -148,8 +146,8 @@ final class ApplicationTest extends TestCase
 
     private function mockFeeCharger(
         ContainerInterface $container,
-        ConfigInterface $config,
-        CurrencyConverterInterface $currencyConverter
+        Config $config,
+        CurrencyConverter $currencyConverter
     ): FeeChargerInterface {
         return $this->getMockBuilder(PrivateClientWithdrawFeeCharger::class)
             ->enableOriginalConstructor()

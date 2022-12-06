@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
-use App\CommissionTask\Converter\CurrencyConverterInterface;
-use App\CommissionTask\Model\Client\ClientInterface;
-use App\CommissionTask\Model\Operation\OperationInterface;
+use App\CommissionTask\Converter\CurrencyConverter;
+use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
+use Brick\Money\Exception\CurrencyConversionException;
 use Brick\Money\Exception\MoneyMismatchException;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
@@ -18,7 +19,7 @@ use Brick\Money\Money;
 class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(
-        private CurrencyConverterInterface $currencyConverter,
+        private CurrencyConverter $currencyConverter,
         private StorageInterface $storage,
         private float $feePercent,
         private float $freeCountPerWeek,
@@ -29,9 +30,9 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
     /**
      * @throws UnknownCurrencyException
-     * @throws MoneyMismatchException
+     * @throws MoneyMismatchException|CurrencyConversionException
      */
-    public function charge(OperationInterface $operation): \Stringable|string
+    public function charge(Operation $operation): \Stringable|string
     {
         $clientOperationsInWeek = array_filter(
             (array) $this->storage->all(StorageInterface::PARTITION_OPERATIONS),
@@ -72,20 +73,20 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         )->getAmount();
     }
 
-    public function supports(OperationInterface $operation): bool
+    public function supports(Operation $operation): bool
     {
-        return $operation->getType() === OperationInterface::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === ClientInterface::TYPE_PRIVATE;
+        return $operation->getType() === Operation::TYPE_WITHDRAW
+            && $operation->getClient()->getType() === Client::TYPE_PRIVATE;
     }
 
-    private function getClosureForSearch(OperationInterface $operation): callable
+    private function getClosureForSearch(Operation $operation): callable
     {
         $client = $operation->getClient();
         $processedDate = clone $operation->getProcessedAt();
         $week = $this->getWeekIdentifier($processedDate);
 
-        return function (OperationInterface $operation) use ($client, $week) {
-            return $operation->getType() === OperationInterface::TYPE_WITHDRAW
+        return function (Operation $operation) use ($client, $week) {
+            return $operation->getType() === Operation::TYPE_WITHDRAW
                 && $operation->getClient() === $client
                 && $this->getWeekIdentifier($operation->getProcessedAt()) === $week;
         };
@@ -103,7 +104,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
     /**
      * @throws UnknownCurrencyException
-     * @throws MoneyMismatchException
+     * @throws MoneyMismatchException|CurrencyConversionException
      */
     private function getFeeChargingAmount(
         BigDecimal $operationAmount,
@@ -117,7 +118,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         );
         $alreadySpent = Money::zero($baseCurrencyCode);
 
-        /** @var OperationInterface $operationInWeek */
+        /** @var Operation $operationInWeek */
         foreach ($clientOperationsInWeek as $operationInWeek) {
             $alreadySpent = $alreadySpent->plus(
                 Money::of(

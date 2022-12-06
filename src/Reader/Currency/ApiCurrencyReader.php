@@ -25,7 +25,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface
         $this->parse($this->request());
     }
 
-    public function request(): string
+    protected function request(): string
     {
         $curl = curl_init();
 

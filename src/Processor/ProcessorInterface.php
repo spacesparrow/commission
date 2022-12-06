@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Processor;
 
-use App\CommissionTask\Model\Operation\OperationInterface;
+use App\CommissionTask\Model\Operation\Operation;
 
 interface ProcessorInterface
 {
-    public function process(OperationInterface $operation): \Stringable|string;
+    public function process(Operation $operation): \Stringable|string;
 }

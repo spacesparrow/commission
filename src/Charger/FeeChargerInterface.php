@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Charger;
 
-use App\CommissionTask\Model\Operation\OperationInterface;
+use App\CommissionTask\Model\Operation\Operation;
 
 interface FeeChargerInterface
 {
-    public function charge(OperationInterface $operation): \Stringable|string;
+    public function charge(Operation $operation): \Stringable|string;
 
-    public function supports(OperationInterface $operation): bool;
+    public function supports(Operation $operation): bool;
 }

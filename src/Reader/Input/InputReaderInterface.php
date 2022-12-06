@@ -6,5 +6,5 @@ namespace App\CommissionTask\Reader\Input;
 
 interface InputReaderInterface
 {
-    public function read($source);
+    public function read($source): \Generator;
 }
