@@ -8,5 +8,5 @@ use App\CommissionTask\Model\Operation\OperationInterface;
 
 interface ProcessorInterface
 {
-    public function process(OperationInterface $operation): void;
+    public function process(OperationInterface $operation): \Stringable|string;
 }

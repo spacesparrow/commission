@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\CommissionTask;
 
 use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
+use App\CommissionTask\Output\OutputInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
 use App\CommissionTask\Reader\Input\InputReaderInterface;
 
@@ -13,7 +14,8 @@ final class Application
     public function __construct(
         private OperationFactoryInterface $operationFactory,
         private InputReaderInterface $inputReader,
-        private ProcessorInterface $operationProcessor
+        private ProcessorInterface $operationProcessor,
+        private OutputInterface $output
     ) {
     }
 
@@ -23,7 +25,7 @@ final class Application
 
         foreach ($operationsData as $operationsDatum) {
             $operation = $this->operationFactory->createFromCsvRow($operationsDatum);
-            $this->operationProcessor->process($operation);
+            $this->output->writeLn($this->operationProcessor->process($operation));
         }
     }
 }

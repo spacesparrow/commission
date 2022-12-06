@@ -6,25 +6,26 @@ namespace App\CommissionTask\Processor;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Repository\RepositoryInterface;
+use App\CommissionTask\Storage\StorageInterface;
 
 class OperationProcessor implements ProcessorInterface
 {
     /**
      * @param FeeChargerInterface[] $chargers
      */
-    public function __construct(private array $chargers, private RepositoryInterface $operationRepository)
+    public function __construct(private array $chargers, private StorageInterface $storage)
     {
     }
 
-    public function process(OperationInterface $operation): void
+    public function process(OperationInterface $operation): \Stringable|string
     {
         foreach ($this->chargers as $charger) {
             if ($charger->supports($operation)) {
-                $charger->charge($operation);
+                $fee = $charger->charge($operation);
+                $this->storage->add(StorageInterface::PARTITION_OPERATIONS, $operation->getIdentifier(), $operation);
+
+                return $fee;
             }
         }
-
-        $this->operationRepository->add($operation);
     }
 }

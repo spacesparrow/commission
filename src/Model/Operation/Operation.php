@@ -8,15 +8,14 @@ use App\CommissionTask\Model\Client\ClientInterface;
 
 class Operation implements OperationInterface
 {
-    protected string $currency;
-
-    protected \DateTimeInterface $processedAt;
-
-    protected string $amount;
-
-    protected string $type;
-
-    protected ClientInterface  $client;
+    public function __construct(
+        private string $currency,
+        private \DateTimeInterface $processedAt,
+        private string $amount,
+        private string $type,
+        private ClientInterface $client
+    ) {
+    }
 
     public function getCurrency(): string
     {

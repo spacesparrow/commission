@@ -8,7 +8,7 @@ use App\CommissionTask\Exception\Converter\NoBaseCurrencyException;
 use App\CommissionTask\Exception\Converter\TooManyBaseCurrenciesException;
 use App\CommissionTask\Model\Core\CurrencyInterface;
 use App\CommissionTask\Reader\Currency\CurrencyReaderInterface;
-use App\CommissionTask\Repository\RepositoryInterface;
+use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context\CustomContext;
@@ -24,7 +24,7 @@ class CurrencyConverter implements CurrencyConverterInterface
     private const DEFAULT_SCALE = 2;
 
     public function __construct(
-        private RepositoryInterface $currencyRepository,
+        private StorageInterface $storage,
         private CurrencyReaderInterface $currencyReader
     ) {
     }
@@ -39,7 +39,7 @@ class CurrencyConverter implements CurrencyConverterInterface
             return BigDecimal::of($amount);
         }
 
-        if (empty($this->currencyRepository->all())) {
+        if (empty($this->storage->all(StorageInterface::PARTITION_CURRENCIES))) {
             $this->currencyReader->read();
         }
 
@@ -54,7 +54,7 @@ class CurrencyConverter implements CurrencyConverterInterface
     public function getBaseCurrency(): CurrencyInterface
     {
         /** @var array|CurrencyInterface[] $currencies */
-        $currencies = $this->currencyRepository->all();
+        $currencies = $this->storage->all(StorageInterface::PARTITION_CURRENCIES);
         $filtered = array_filter($currencies, static function (CurrencyInterface $currency) {
             return $currency->isBase();
         });
@@ -75,7 +75,7 @@ class CurrencyConverter implements CurrencyConverterInterface
         $baseCurrency = $this->getBaseCurrency();
         $provider = new ConfigurableProvider();
         /** @var array|CurrencyInterface[] $currencies */
-        $currencies = $this->currencyRepository->all();
+        $currencies = $this->storage->all(StorageInterface::PARTITION_CURRENCIES);
 
         /** @var CurrencyInterface $currency */
         foreach ($currencies as $currency) {

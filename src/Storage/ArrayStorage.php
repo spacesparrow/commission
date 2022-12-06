@@ -10,10 +10,12 @@ class ArrayStorage implements StorageInterface
 {
     private array $storage = [];
 
-    public function initPartition(string $partition): void
+    public function init(): void
     {
-        if (!isset($this->storage[$partition])) {
-            $this->storage[$partition] = [];
+        foreach (StorageInterface::AVAILABLE_PARTITIONS as $partition) {
+            if (!isset($this->storage[$partition])) {
+                $this->storage[$partition] = [];
+            }
         }
     }
 

@@ -7,10 +7,9 @@ namespace App\CommissionTask\Charger\Withdraw;
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Util\MoneyUtil;
-use App\CommissionTask\Util\OutputUtil;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
+use Brick\Money\Money;
 
 class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
@@ -21,12 +20,14 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
     /**
      * @throws UnknownCurrencyException
      */
-    public function charge(OperationInterface $operation): void
+    public function charge(OperationInterface $operation): \Stringable|string
     {
-        $operatingAmount = MoneyUtil::createMoneyFromOperation($operation);
-        $fee = $operatingAmount->multipliedBy($this->feePercent, RoundingMode::UP);
-
-        OutputUtil::writeLn($fee->getAmount());
+        return Money::of(
+            $operation->getAmount(),
+            $operation->getCurrency(),
+            null,
+            RoundingMode::UP
+        )->multipliedBy($this->feePercent, RoundingMode::UP)->getAmount();
     }
 
     public function supports(OperationInterface $operation): bool
