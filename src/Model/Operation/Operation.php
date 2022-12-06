@@ -22,19 +22,9 @@ class Operation implements OperationInterface
         return $this->currency;
     }
 
-    public function setCurrency(string $currency): void
-    {
-        $this->currency = $currency;
-    }
-
     public function getProcessedAt(): \DateTimeInterface
     {
         return $this->processedAt;
-    }
-
-    public function setProcessedAt(\DateTimeInterface $processedAt): void
-    {
-        $this->processedAt = $processedAt;
     }
 
     public function getAmount(): string
@@ -42,29 +32,14 @@ class Operation implements OperationInterface
         return $this->amount;
     }
 
-    public function setAmount(string $amount): void
-    {
-        $this->amount = $amount;
-    }
-
     public function getType(): string
     {
         return $this->type;
     }
 
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
     public function getClient(): ClientInterface
     {
         return $this->client;
-    }
-
-    public function setClient(ClientInterface $client): void
-    {
-        $this->client = $client;
     }
 
     public function getIdentifier(): string

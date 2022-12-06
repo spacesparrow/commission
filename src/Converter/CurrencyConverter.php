@@ -51,7 +51,7 @@ class CurrencyConverter implements CurrencyConverterInterface
         )->getAmount();
     }
 
-    public function getBaseCurrency(): CurrencyInterface
+    private function getBaseCurrency(): CurrencyInterface
     {
         /** @var array|CurrencyInterface[] $currencies */
         $currencies = $this->storage->all(StorageInterface::PARTITION_CURRENCIES);
