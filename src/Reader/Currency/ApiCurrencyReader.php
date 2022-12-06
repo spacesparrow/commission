@@ -7,14 +7,14 @@ namespace App\CommissionTask\Reader\Currency;
 use App\CommissionTask\Exception\Reader\CommunicationException;
 use App\CommissionTask\Exception\Reader\InvalidDataException;
 use App\CommissionTask\Model\Core\Currency;
-use App\CommissionTask\Repository\RepositoryInterface;
+use App\CommissionTask\Storage\StorageInterface;
 use App\CommissionTask\Validator\ValidatorInterface;
 
 class ApiCurrencyReader implements CurrencyReaderInterface
 {
     public function __construct(
         private ValidatorInterface $validator,
-        private RepositoryInterface $currencyRepository,
+        private StorageInterface $storage,
         private string $apiUrl,
         private int $maxAttempts
     ) {
@@ -61,7 +61,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface
                 rate: (string) $rate,
                 base: $currencyCode === $decodedData['base']
             );
-            $this->currencyRepository->add($currency);
+            $this->storage->add(StorageInterface::PARTITION_CURRENCIES, $currency->getIdentifier(), $currency);
         }
     }
 }

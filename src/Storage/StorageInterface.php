@@ -8,7 +8,17 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 interface StorageInterface
 {
-    public function initPartition(string $partition): void;
+    public const PARTITION_CLIENTS = 'clients';
+    public const PARTITION_CURRENCIES = 'currencies';
+    public const PARTITION_OPERATIONS = 'operations';
+
+    public const AVAILABLE_PARTITIONS = [
+        self::PARTITION_CLIENTS,
+        self::PARTITION_CURRENCIES,
+        self::PARTITION_OPERATIONS,
+    ];
+
+    public function init(): void;
 
     public function get(string $partition, string $identifier): ?ModelInterface;
 

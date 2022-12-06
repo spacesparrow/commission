@@ -8,7 +8,7 @@ use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverterInterface;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Repository\RepositoryInterface;
+use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\MoneyMismatchException;
@@ -19,7 +19,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(
         private CurrencyConverterInterface $currencyConverter,
-        private RepositoryInterface $operationRepository,
+        private StorageInterface $storage,
         private float $feePercent,
         private float $freeCountPerWeek,
         private int $freeAmountPerWeek,
@@ -33,8 +33,10 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
      */
     public function charge(OperationInterface $operation): \Stringable|string
     {
-        /** @var array $clientOperationsInWeek */
-        $clientOperationsInWeek = $this->operationRepository->findUsingClosure($this->getClosureForSearch($operation));
+        $clientOperationsInWeek = array_filter(
+            (array) $this->storage->all(StorageInterface::PARTITION_OPERATIONS),
+            $this->getClosureForSearch($operation)
+        );
 
         if ($this->freeCountPerWeek < count($clientOperationsInWeek) + 1) {
             return Money::of(

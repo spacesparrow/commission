@@ -124,7 +124,7 @@ final class ApplicationTest extends TestCase
             ->enableOriginalConstructor()
             ->setConstructorArgs([
                 $container->get('app.validator.currency_response'),
-                $container->get('app.repository.currency'),
+                $container->get('app.storage.array'),
                 $container->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
                 $container->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
             ])
@@ -141,7 +141,7 @@ final class ApplicationTest extends TestCase
     ): CurrencyConverterInterface {
         return $this->getMockBuilder(CurrencyConverter::class)
             ->enableOriginalConstructor()
-            ->setConstructorArgs([$container->get('app.repository.currency'), $currencyReader])
+            ->setConstructorArgs([$container->get('app.storage.array'), $currencyReader])
             ->onlyMethods([])
             ->getMock();
     }
@@ -155,7 +155,7 @@ final class ApplicationTest extends TestCase
             ->enableOriginalConstructor()
             ->setConstructorArgs([
                 $currencyConverter,
-                $container->get('app.repository.operation'),
+                $container->get('app.storage.array'),
                 $config->getConfigParamByName('parameters.fee.withdraw.private.percent'),
                 $config->getConfigParamByName('parameters.fee.withdraw.private.free_count_per_week'),
                 $config->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),
@@ -178,7 +178,7 @@ final class ApplicationTest extends TestCase
                         $container->get('app.charger.fee.withdraw_business'),
                         $mockedCharger
                     ],
-                    $container->get('app.repository.operation')
+                    $container->get('app.storage.array')
                 ]
             )
             ->onlyMethods([])

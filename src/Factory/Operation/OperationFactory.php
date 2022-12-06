@@ -8,11 +8,11 @@ use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Client\ClientInterface;
 use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Model\Operation\OperationInterface;
-use App\CommissionTask\Repository\RepositoryInterface;
+use App\CommissionTask\Storage\StorageInterface;
 
 class OperationFactory implements OperationFactoryInterface
 {
-    public function __construct(private RepositoryInterface $clientRepository)
+    public function __construct(private StorageInterface $storage)
     {
     }
 
@@ -32,11 +32,11 @@ class OperationFactory implements OperationFactoryInterface
 
     private function getClient(string $clientId, string $clientType): ClientInterface
     {
-        $client = $this->clientRepository->get($clientId);
+        $client = $this->storage->get(StorageInterface::PARTITION_CLIENTS, $clientId);
 
         if (!$client) {
             $client = new Client(id: (int) $clientId, type: $clientType);
-            $this->clientRepository->add($client);
+            $this->storage->add(StorageInterface::PARTITION_CLIENTS, $client->getIdentifier(), $client);
         }
 
         return $client;

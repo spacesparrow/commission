@@ -14,9 +14,6 @@ use App\CommissionTask\Output\ConsoleOutput;
 use App\CommissionTask\Processor\OperationProcessor;
 use App\CommissionTask\Reader\Currency\ApiCurrencyReader;
 use App\CommissionTask\Reader\Input\FileInputReader;
-use App\CommissionTask\Repository\ClientRepository;
-use App\CommissionTask\Repository\CurrencyRepository;
-use App\CommissionTask\Repository\OperationRepository;
 use App\CommissionTask\Storage\ArrayStorage;
 use App\CommissionTask\Validator\Reader\ApiCurrencyReaderResponseValidator;
 use App\CommissionTask\Validator\Reader\FileInputReaderValidator;
@@ -34,10 +31,12 @@ class Container implements ContainerInterface
         // Register config
         $this->set('app.config', $config);
 
-        // Register storage
-        $this->set('app.storage.array', new ArrayStorage());
+        $storage = new ArrayStorage();
+        $storage->init();
 
-        $this->registerRepositories();
+        // Register storage
+        $this->set('app.storage.array', $storage);
+
         $this->registerFactories();
         $this->registerValidators();
         $this->registerReaders();
@@ -45,7 +44,7 @@ class Container implements ContainerInterface
         // Register currency converter
         $this->set(
             'app.converter.currency',
-            new CurrencyConverter($this->get('app.repository.currency'), $this->get('app.reader.currency'))
+            new CurrencyConverter($this->get('app.storage.array'), $this->get('app.reader.currency'))
         );
 
         $this->registerFeeChargers();
@@ -59,7 +58,7 @@ class Container implements ContainerInterface
                     $this->get('app.charger.fee.withdraw_business'),
                     $this->get('app.charger.fee.withdraw_private'),
                 ],
-                $this->get('app.repository.operation')
+                $this->get('app.storage.array')
             )
         );
 
@@ -80,16 +79,9 @@ class Container implements ContainerInterface
         $this->instances[$key] = $instance;
     }
 
-    private function registerRepositories(): void
-    {
-        $this->set('app.repository.currency', new CurrencyRepository($this->get('app.storage.array')));
-        $this->set('app.repository.client', new ClientRepository($this->get('app.storage.array')));
-        $this->set('app.repository.operation', new OperationRepository($this->get('app.storage.array')));
-    }
-
     private function registerFactories(): void
     {
-        $this->set('app.factory.operation', new OperationFactory($this->get('app.repository.client')));
+        $this->set('app.factory.operation', new OperationFactory($this->get('app.storage.array')));
     }
 
     private function registerValidators(): void
@@ -97,7 +89,6 @@ class Container implements ContainerInterface
         $this->set(
             'app.validator.currency_response',
             new ApiCurrencyReaderResponseValidator(
-                $this->get('app.config')->getConfigParamByName('parameters.reader.response_required_fields'),
                 $this->get('app.config')->getConfigParamByName('parameters.currency.supported'),
                 $this->get('app.config')->getConfigParamByName('parameters.currency.base_currency_code')
             )
@@ -117,7 +108,7 @@ class Container implements ContainerInterface
             'app.reader.currency',
             new ApiCurrencyReader(
                 $this->get('app.validator.currency_response'),
-                $this->get('app.repository.currency'),
+                $this->get('app.storage.array'),
                 $this->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
                 $this->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
             )
@@ -143,7 +134,7 @@ class Container implements ContainerInterface
             'app.charger.fee.withdraw_private',
             new PrivateClientWithdrawFeeCharger(
                 $this->get('app.converter.currency'),
-                $this->get('app.repository.operation'),
+                $this->get('app.storage.array'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.percent'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.free_count_per_week'),
                 $this->get('app.config')->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),

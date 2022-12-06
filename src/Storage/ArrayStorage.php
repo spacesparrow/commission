@@ -8,16 +8,14 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 class ArrayStorage implements StorageInterface
 {
-    public const PARTITION_CLIENTS = 'clients';
-    public const PARTITION_CURRENCIES = 'currencies';
-    public const PARTITION_OPERATIONS = 'operations';
-
     private array $storage = [];
 
-    public function initPartition(string $partition): void
+    public function init(): void
     {
-        if (!isset($this->storage[$partition])) {
-            $this->storage[$partition] = [];
+        foreach (StorageInterface::AVAILABLE_PARTITIONS as $partition) {
+            if (!isset($this->storage[$partition])) {
+                $this->storage[$partition] = [];
+            }
         }
     }
 
