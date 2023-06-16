@@ -14,13 +14,13 @@
 		}
 	},
 	"require": {
-		"php": ">=8.0",
-		"ext-bcmath": "^8.0",
-		"ext-curl": "^8.0",
-		"ext-json": "^8.0",
-		"brick/money": "^0.7.0",
-		"symfony/dotenv": "^5.4",
-		"symfony/yaml": "^5.4"
+		"php": "^8.2",
+		"ext-bcmath": "^8.2",
+		"ext-curl": "^8.2",
+		"ext-json": "^8.2",
+		"brick/money": "^0.8",
+		"symfony/dotenv": "^6.3",
+		"symfony/yaml": "^6.3"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.13",

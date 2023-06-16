@@ -22,7 +22,7 @@ interface StorageInterface
 
     public function get(string $partition, string $identifier): ?ModelInterface;
 
-    public function all(?string $partition = null): iterable;
+    public function all(string $partition = null): iterable;
 
     public function has(string $partition, string $identifier): bool;
 
