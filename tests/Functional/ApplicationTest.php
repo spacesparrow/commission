@@ -19,6 +19,8 @@ use App\CommissionTask\Reader\Input\FileInputReader;
 use App\CommissionTask\Tests\Functional\Fixtures\ApiCurrencyDataFixture;
 use App\CommissionTask\Tests\Functional\Fixtures\ConfigDataFixture;
 use App\CommissionTask\Tests\Functional\Fixtures\CsvOperationDataFixture;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
 final class ApplicationTest extends TestCase
@@ -27,6 +29,7 @@ final class ApplicationTest extends TestCase
 
     /**
      * @throws \JsonException
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -53,8 +56,8 @@ final class ApplicationTest extends TestCase
         );
     }
 
+    #[DataProvider('dataProviderForRunTesting')]
     /**
-     * @dataProvider dataProviderForRunTesting
      * @covers       \App\CommissionTask\Application::run
      * @throws \Exception
      */
@@ -66,7 +69,7 @@ final class ApplicationTest extends TestCase
         $this->expectOutputString($expectedOutput);
     }
 
-    public function dataProviderForRunTesting(): array
+    public static function dataProviderForRunTesting(): array
     {
         $expectedFees = [
             '0.60',
@@ -110,6 +113,7 @@ final class ApplicationTest extends TestCase
 
     /**
      * @throws \JsonException
+     * @throws Exception
      */
     private function mockReaders(ContainerInterface $container): array
     {
