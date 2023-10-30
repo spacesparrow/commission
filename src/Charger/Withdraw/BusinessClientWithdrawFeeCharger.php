@@ -7,11 +7,14 @@ namespace App\CommissionTask\Charger\Withdraw;
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Operation\Operation;
+use Brick\Math\Exception\MathException;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
 
-class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
+readonly class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(private float $feePercent)
     {
@@ -19,6 +22,9 @@ class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 
     /**
      * @throws UnknownCurrencyException
+     * @throws MathException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
      */
     public function charge(Operation $operation): \Stringable|string
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\CommissionTask\Model\Core;
 
-class Currency implements ModelInterface
+readonly class Currency implements ModelInterface
 {
     public function __construct(private string $code, private string $rate, private bool $base)
     {

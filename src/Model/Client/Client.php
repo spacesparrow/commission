@@ -6,7 +6,7 @@ namespace App\CommissionTask\Model\Client;
 
 use App\CommissionTask\Model\Core\ModelInterface;
 
-class Client implements ModelInterface
+readonly class Client implements ModelInterface
 {
     public const TYPE_PRIVATE = 'private';
     public const TYPE_BUSINESS = 'business';

@@ -9,7 +9,7 @@ use App\CommissionTask\Output\OutputInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
 use App\CommissionTask\Reader\Input\InputReaderInterface;
 
-final class Application
+final readonly class Application
 {
     public function __construct(
         private OperationFactory $operationFactory,
@@ -19,6 +19,9 @@ final class Application
     ) {
     }
 
+    /**
+     * @throws \Exception
+     */
     public function run(array $argv): void
     {
         $operationsData = $this->inputReader->read($argv[1]);

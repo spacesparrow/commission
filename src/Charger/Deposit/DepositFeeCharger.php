@@ -6,11 +6,14 @@ namespace App\CommissionTask\Charger\Deposit;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Operation\Operation;
+use Brick\Math\Exception\MathException;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\UnknownCurrencyException;
 use Brick\Money\Money;
 
-class DepositFeeCharger implements FeeChargerInterface
+readonly class DepositFeeCharger implements FeeChargerInterface
 {
     public function __construct(private float $feePercent)
     {
@@ -18,6 +21,9 @@ class DepositFeeCharger implements FeeChargerInterface
 
     /**
      * @throws UnknownCurrencyException
+     * @throws MathException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
      */
     public function charge(Operation $operation): \Stringable|string
     {

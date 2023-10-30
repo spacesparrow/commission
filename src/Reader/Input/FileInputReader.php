@@ -8,7 +8,7 @@ use App\CommissionTask\Validator\ValidatorInterface;
 
 class FileInputReader implements InputReaderInterface
 {
-    public function __construct(private ValidatorInterface $validator)
+    public function __construct(private readonly ValidatorInterface $validator)
     {
     }
 

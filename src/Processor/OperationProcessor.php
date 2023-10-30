@@ -13,7 +13,7 @@ class OperationProcessor implements ProcessorInterface
     /**
      * @param FeeChargerInterface[] $chargers
      */
-    public function __construct(private array $chargers, private StorageInterface $storage)
+    public function __construct(private readonly array $chargers, private readonly StorageInterface $storage)
     {
     }
 

@@ -7,7 +7,7 @@ namespace App\CommissionTask\Model\Operation;
 use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Core\ModelInterface;
 
-class Operation implements ModelInterface
+readonly class Operation implements ModelInterface
 {
     public const TYPE_DEPOSIT = 'deposit';
     public const TYPE_WITHDRAW = 'withdraw';

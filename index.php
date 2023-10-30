@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use App\CommissionTask\Application;
-use App\CommissionTask\Factory\Operation\OperationFactoryInterface;
+use App\CommissionTask\Factory\Operation\OperationFactory;
 use App\CommissionTask\Kernel\Container;
 use App\CommissionTask\Output\OutputInterface;
 use App\CommissionTask\Processor\ProcessorInterface;
@@ -18,7 +18,7 @@ $consoleOutput = $container->get('app.output.console');
 
 try {
 
-    /** @var OperationFactoryInterface $operationFactory */
+    /** @var OperationFactory $operationFactory */
     $operationFactory = $container->get('app.factory.operation');
     /** @var InputReaderInterface $inputReader */
     $inputReader = $container->get('app.reader.input.file');

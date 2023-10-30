@@ -10,6 +10,9 @@ use App\CommissionTask\Model\Core\Currency;
 use App\CommissionTask\Reader\Currency\CurrencyReaderInterface;
 use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
+use Brick\Math\Exception\MathException;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Context\CustomContext;
 use Brick\Money\CurrencyConverter as ExternalCurrencyConverter;
@@ -24,14 +27,17 @@ class CurrencyConverter
     private const DEFAULT_SCALE = 2;
 
     public function __construct(
-        private StorageInterface $storage,
-        private CurrencyReaderInterface $currencyReader
+        private readonly StorageInterface $storage,
+        private readonly CurrencyReaderInterface $currencyReader
     ) {
     }
 
     /**
      * @throws CurrencyConversionException
      * @throws UnknownCurrencyException
+     * @throws MathException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
      */
     public function convert(string $from, string $to, string $amount): BigDecimal
     {

@@ -10,6 +10,9 @@ use App\CommissionTask\Model\Client\Client;
 use App\CommissionTask\Model\Operation\Operation;
 use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
+use Brick\Math\Exception\MathException;
+use Brick\Math\Exception\NumberFormatException;
+use Brick\Math\Exception\RoundingNecessaryException;
 use Brick\Math\RoundingMode;
 use Brick\Money\Exception\CurrencyConversionException;
 use Brick\Money\Exception\MoneyMismatchException;
@@ -19,18 +22,22 @@ use Brick\Money\Money;
 class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 {
     public function __construct(
-        private CurrencyConverter $currencyConverter,
-        private StorageInterface $storage,
-        private float $feePercent,
-        private float $freeCountPerWeek,
-        private int $freeAmountPerWeek,
-        private string $baseCurrencyCode
+        private readonly CurrencyConverter $currencyConverter,
+        private readonly StorageInterface $storage,
+        private readonly float $feePercent,
+        private readonly float $freeCountPerWeek,
+        private readonly int $freeAmountPerWeek,
+        private readonly string $baseCurrencyCode
     ) {
     }
 
     /**
+     * @throws CurrencyConversionException
+     * @throws MoneyMismatchException
      * @throws UnknownCurrencyException
-     * @throws MoneyMismatchException|CurrencyConversionException
+     * @throws MathException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
      */
     public function charge(Operation $operation): \Stringable|string
     {
@@ -103,8 +110,12 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
     }
 
     /**
+     * @throws CurrencyConversionException
+     * @throws MathException
+     * @throws MoneyMismatchException
+     * @throws NumberFormatException
+     * @throws RoundingNecessaryException
      * @throws UnknownCurrencyException
-     * @throws MoneyMismatchException|CurrencyConversionException
      */
     private function getFeeChargingAmount(
         BigDecimal $operationAmount,

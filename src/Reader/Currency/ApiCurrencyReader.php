@@ -13,9 +13,9 @@ use App\CommissionTask\Validator\ValidatorInterface;
 class ApiCurrencyReader implements CurrencyReaderInterface
 {
     public function __construct(
-        private ValidatorInterface $validator,
-        private StorageInterface $storage,
-        private string $apiUrl,
+        private readonly ValidatorInterface $validator,
+        private readonly StorageInterface $storage,
+        private readonly string $apiUrl,
         private int $maxAttempts
     ) {
     }
@@ -56,11 +56,7 @@ class ApiCurrencyReader implements CurrencyReaderInterface
         $this->validator->validate($decodedData);
 
         foreach ($decodedData['rates'] as $currencyCode => $rate) {
-            $currency = new Currency(
-                code: $currencyCode,
-                rate: (string) $rate,
-                base: $currencyCode === $decodedData['base']
-            );
+            $currency = new Currency($currencyCode, (string) $rate, $currencyCode === $decodedData['base']);
             $this->storage->add(StorageInterface::PARTITION_CURRENCIES, $currency->getIdentifier(), $currency);
         }
     }

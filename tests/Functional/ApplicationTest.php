@@ -56,6 +56,7 @@ final class ApplicationTest extends TestCase
     /**
      * @dataProvider dataProviderForRunTesting
      * @covers       \App\CommissionTask\Application::run
+     * @throws \Exception
      */
     public function testRun(string $pathToFile, string $expectedOutput): void
     {
@@ -134,9 +135,10 @@ final class ApplicationTest extends TestCase
     }
 
     private function mockCurrencyConverter(
-        ContainerInterface $container,
+        ContainerInterface      $container,
         CurrencyReaderInterface $currencyReader
-    ): CurrencyConverter {
+    ): CurrencyConverter
+    {
         return $this->getMockBuilder(CurrencyConverter::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([$container->get('app.storage.array'), $currencyReader])
@@ -146,9 +148,10 @@ final class ApplicationTest extends TestCase
 
     private function mockFeeCharger(
         ContainerInterface $container,
-        Config $config,
-        CurrencyConverter $currencyConverter
-    ): FeeChargerInterface {
+        Config             $config,
+        CurrencyConverter  $currencyConverter
+    ): FeeChargerInterface
+    {
         return $this->getMockBuilder(PrivateClientWithdrawFeeCharger::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([
@@ -164,9 +167,10 @@ final class ApplicationTest extends TestCase
     }
 
     private function mockOperationProcessor(
-        ContainerInterface $container,
+        ContainerInterface  $container,
         FeeChargerInterface $mockedCharger
-    ): ProcessorInterface {
+    ): ProcessorInterface
+    {
         return $this->getMockBuilder(OperationProcessor::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs(
