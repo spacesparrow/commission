@@ -11,6 +11,9 @@
         <testsuite name="Functional tests">
             <directory>tests/Functional</directory>
         </testsuite>
+        <testsuite name="Unit tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
