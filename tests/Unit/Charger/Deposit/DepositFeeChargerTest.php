@@ -49,7 +49,7 @@ final class DepositFeeChargerTest extends TestCase
     #[DataProvider('dataProviderForChargeTesting')]
     public function testCharge(Operation $operation, string $expectedCharge): void
     {
-        $this->assertSame($expectedCharge, (string)$this->charger->charge($operation));
+        $this->assertSame($expectedCharge, (string) $this->charger->charge($operation));
     }
 
     public static function dataProviderForSupportsTesting(): array

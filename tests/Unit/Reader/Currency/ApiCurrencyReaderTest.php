@@ -49,7 +49,7 @@ class ApiCurrencyReaderTest extends TestCase
                 $validatorMock,
                 $storageMock,
                 $apiUrl,
-                $maxAttempts
+                $maxAttempts,
             ])
             ->onlyMethods(['request'])
             ->getMock();
@@ -77,7 +77,7 @@ class ApiCurrencyReaderTest extends TestCase
                 $validatorMock,
                 $storageMock,
                 $apiUrl,
-                $maxAttempts
+                $maxAttempts,
             ])
             ->onlyMethods(['request'])
             ->getMock();

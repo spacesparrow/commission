@@ -59,6 +59,7 @@ final class ApplicationTest extends TestCase
     #[DataProvider('dataProviderForRunTesting')]
     /**
      * @covers       \App\CommissionTask\Application::run
+     *
      * @throws \Exception
      */
     public function testRun(string $pathToFile, string $expectedOutput): void
@@ -90,7 +91,7 @@ final class ApplicationTest extends TestCase
         return [
             'run application with example data' => [
                 'input.example.csv',
-                implode(PHP_EOL, $expectedFees) . PHP_EOL,
+                implode(PHP_EOL, $expectedFees).PHP_EOL,
             ],
         ];
     }
@@ -129,7 +130,7 @@ final class ApplicationTest extends TestCase
                 $container->get('app.validator.currency_response'),
                 $container->get('app.storage.array'),
                 $container->get('app.config')->getEnvVarByName('CURRENCY_API_URL'),
-                $container->get('app.config')->getConfigParamByName('parameters.reader.max_attempts')
+                $container->get('app.config')->getConfigParamByName('parameters.reader.max_attempts'),
             ])
             ->onlyMethods(['request'])
             ->getMock();
@@ -139,10 +140,9 @@ final class ApplicationTest extends TestCase
     }
 
     private function mockCurrencyConverter(
-        ContainerInterface      $container,
+        ContainerInterface $container,
         CurrencyReaderInterface $currencyReader
-    ): CurrencyConverter
-    {
+    ): CurrencyConverter {
         return $this->getMockBuilder(CurrencyConverter::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([$container->get('app.storage.array'), $currencyReader])
@@ -152,10 +152,9 @@ final class ApplicationTest extends TestCase
 
     private function mockFeeCharger(
         ContainerInterface $container,
-        Config             $config,
-        CurrencyConverter  $currencyConverter
-    ): FeeChargerInterface
-    {
+        Config $config,
+        CurrencyConverter $currencyConverter
+    ): FeeChargerInterface {
         return $this->getMockBuilder(PrivateClientWithdrawFeeCharger::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs([
@@ -164,17 +163,16 @@ final class ApplicationTest extends TestCase
                 $config->getConfigParamByName('parameters.fee.withdraw.private.percent'),
                 $config->getConfigParamByName('parameters.fee.withdraw.private.free_count_per_week'),
                 $config->getConfigParamByName('parameters.fee.withdraw.private.free_amount_per_week'),
-                $config->getConfigParamByName('parameters.currency.base_currency_code')
+                $config->getConfigParamByName('parameters.currency.base_currency_code'),
             ])
             ->onlyMethods([])
             ->getMock();
     }
 
     private function mockOperationProcessor(
-        ContainerInterface  $container,
+        ContainerInterface $container,
         FeeChargerInterface $mockedCharger
-    ): ProcessorInterface
-    {
+    ): ProcessorInterface {
         return $this->getMockBuilder(OperationProcessor::class)
             ->enableOriginalConstructor()
             ->setConstructorArgs(
@@ -182,9 +180,9 @@ final class ApplicationTest extends TestCase
                     [
                         $container->get('app.charger.fee.deposit'),
                         $container->get('app.charger.fee.withdraw_business'),
-                        $mockedCharger
+                        $mockedCharger,
                     ],
-                    $container->get('app.storage.array')
+                    $container->get('app.storage.array'),
                 ]
             )
             ->onlyMethods([])

@@ -40,7 +40,7 @@ class PrivateClientWithdrawFeeChargerTest extends TestCase
         $currencyConverterMock = $this->createMock(CurrencyConverter::class);
         $currencyConverterMock->expects($this->never())->method('convert');
         $charger = $this->getCharger($currencyConverterMock, [], 0, 5);
-        $this->assertSame($expectedCharge, (string)$charger->charge($operation));
+        $this->assertSame($expectedCharge, (string) $charger->charge($operation));
     }
 
     /**
@@ -63,7 +63,7 @@ class PrivateClientWithdrawFeeChargerTest extends TestCase
             ->method('convert')
             ->willReturn(BigDecimal::of($operation->getAmount()));
         $charger = $this->getCharger($currencyConverterMock, [], 500);
-        $this->assertSame($expectedCharge, (string)$charger->charge($operation));
+        $this->assertSame($expectedCharge, (string) $charger->charge($operation));
     }
 
     /**
@@ -84,7 +84,7 @@ class PrivateClientWithdrawFeeChargerTest extends TestCase
         $currencyConverterMock = $this->createMock(CurrencyConverter::class);
         $currencyConverterMock->expects($this->never())->method('convert');
         $charger = $this->getCharger($currencyConverterMock, [$operation], 0);
-        $this->assertSame($expectedCharge, (string)$charger->charge($operation));
+        $this->assertSame($expectedCharge, (string) $charger->charge($operation));
     }
 
     /**
@@ -114,7 +114,7 @@ class PrivateClientWithdrawFeeChargerTest extends TestCase
             [PrivateClientWithdrawFeeChargerDataProvider::getOperation('0.5')],
             1
         );
-        $this->assertSame($expectedCharge, (string)$charger->charge($operation));
+        $this->assertSame($expectedCharge, (string) $charger->charge($operation));
     }
 
     /**
@@ -146,11 +146,10 @@ class PrivateClientWithdrawFeeChargerTest extends TestCase
      */
     private function getCharger(
         CurrencyConverter|MockObject $currencyConverterMock,
-        array                        $expectedReturnOfAllMethod,
-        int                          $freeAmountPerWeek,
-        int                          $freeCountPerWeek = 1
-    ): PrivateClientWithdrawFeeCharger
-    {
+        array $expectedReturnOfAllMethod,
+        int $freeAmountPerWeek,
+        int $freeCountPerWeek = 1
+    ): PrivateClientWithdrawFeeCharger {
         return new PrivateClientWithdrawFeeCharger(
             $currencyConverterMock,
             $this->getStorageMock($expectedReturnOfAllMethod),

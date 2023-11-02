@@ -24,7 +24,7 @@ class OperationFactoryTest extends TestCase
         $storageMock = $this->createMock(ArrayStorage::class);
         $storageMock->expects($this->once())
             ->method('get')
-            ->with(StorageInterface::PARTITION_CLIENTS, (string)$client->getId())
+            ->with(StorageInterface::PARTITION_CLIENTS, (string) $client->getId())
             ->willReturn($client);
         $storageMock->expects($this->never())->method('add');
         $csvRow = [
@@ -32,7 +32,7 @@ class OperationFactoryTest extends TestCase
             'processed_at' => '2023-10-31 23:59:59',
             'amount' => '5',
             'operation_type' => Operation::TYPE_DEPOSIT,
-            'client_id' => (string)$client->getId(),
+            'client_id' => (string) $client->getId(),
             'client_type' => $client->getType(),
         ];
         $operationFactory = new OperationFactory($storageMock);
@@ -42,7 +42,7 @@ class OperationFactoryTest extends TestCase
         $this->assertSame($csvRow['amount'], $operation->getAmount());
         $this->assertSame($csvRow['operation_type'], $operation->getType());
         $this->assertEquals($client, $operation->getClient());
-        $this->assertSame($csvRow['client_id'], (string)$operation->getClient()->getId());
+        $this->assertSame($csvRow['client_id'], (string) $operation->getClient()->getId());
         $this->assertSame($csvRow['client_type'], $operation->getClient()->getType());
     }
 
@@ -56,7 +56,7 @@ class OperationFactoryTest extends TestCase
         $storageMock = $this->createMock(ArrayStorage::class);
         $storageMock->expects($this->once())
             ->method('get')
-            ->with(StorageInterface::PARTITION_CLIENTS, (string)$client->getId())
+            ->with(StorageInterface::PARTITION_CLIENTS, (string) $client->getId())
             ->willReturn(null);
         $storageMock->expects($this->once())
             ->method('add')
@@ -66,7 +66,7 @@ class OperationFactoryTest extends TestCase
             'processed_at' => '2023-10-31 23:59:59',
             'amount' => '5',
             'operation_type' => Operation::TYPE_DEPOSIT,
-            'client_id' => (string)$client->getId(),
+            'client_id' => (string) $client->getId(),
             'client_type' => $client->getType(),
         ];
         $operationFactory = new OperationFactory($storageMock);
@@ -76,7 +76,7 @@ class OperationFactoryTest extends TestCase
         $this->assertSame($csvRow['amount'], $operation->getAmount());
         $this->assertSame($csvRow['operation_type'], $operation->getType());
         $this->assertEquals($client, $operation->getClient());
-        $this->assertSame($csvRow['client_id'], (string)$operation->getClient()->getId());
+        $this->assertSame($csvRow['client_id'], (string) $operation->getClient()->getId());
         $this->assertSame($csvRow['client_type'], $operation->getClient()->getType());
     }
 }
