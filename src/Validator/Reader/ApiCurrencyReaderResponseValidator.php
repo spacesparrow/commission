@@ -8,11 +8,11 @@ use App\CommissionTask\Exception\Validator\Reader\BaseCurrencyMisconfigurationEx
 use App\CommissionTask\Exception\Validator\Reader\SupportedCurrencyMisconfigurationException;
 use App\CommissionTask\Validator\ValidatorInterface;
 
-readonly class ApiCurrencyReaderResponseValidator implements ValidatorInterface
+class ApiCurrencyReaderResponseValidator implements ValidatorInterface
 {
     public function __construct(
-        private array $supportedCurrencies,
-        private string $baseCurrency
+        private readonly array $supportedCurrencies,
+        private readonly string $baseCurrency
     ) {
     }
 
