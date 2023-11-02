@@ -8,9 +8,9 @@ use App\CommissionTask\Exception\Validator\Reader\UnsupportedClientTypeException
 use App\CommissionTask\Exception\Validator\Reader\UnsupportedOperationTypeException;
 use App\CommissionTask\Validator\ValidatorInterface;
 
-readonly class FileInputReaderValidator implements ValidatorInterface
+class FileInputReaderValidator implements ValidatorInterface
 {
-    public function __construct(private array $clientTypes, private array $operationTypes)
+    public function __construct(private readonly array $clientTypes, private readonly array $operationTypes)
     {
     }
 

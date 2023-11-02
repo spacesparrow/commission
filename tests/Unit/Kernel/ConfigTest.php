@@ -17,6 +17,6 @@ class ConfigTest extends TestCase
         $this->assertNotEmpty($config->getEnvVarByName('CURRENCY_API_URL'));
         $this->assertNotEmpty($config->getConfigParamByName('parameters.fee.withdraw.private.percent'));
         $this->assertNull($config->getConfigParamByName('parameters.fee.withdraw.business.amount'));
-        $this->assertNull($config->getConfigParamByName(''));
+        $this->assertNull($config->getConfigParamByName('unknown stuff'));
     }
 }
