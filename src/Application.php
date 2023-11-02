@@ -28,7 +28,10 @@ final readonly class Application
 
         foreach ($operationsData as $operationsDatum) {
             $operation = $this->operationFactory->createFromCsvRow($operationsDatum);
-            $this->output->writeLn($this->operationProcessor->process($operation));
+            $fee = $this->operationProcessor->process($operation);
+            if ($fee !== '') {
+                $this->output->writeLn($fee);
+            }
         }
     }
 }

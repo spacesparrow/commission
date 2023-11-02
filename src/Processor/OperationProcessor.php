@@ -27,5 +27,7 @@ class OperationProcessor implements ProcessorInterface
                 return $fee;
             }
         }
+
+        return '';
     }
 }
