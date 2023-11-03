@@ -6,7 +6,9 @@ namespace App\CommissionTask\Tests\Unit\Charger\Withdraw;
 
 use App\CommissionTask\Charger\Withdraw\BusinessClientWithdrawFeeCharger;
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
 use Brick\Math\Exception\RoundingNecessaryException;
@@ -26,11 +28,11 @@ class BusinessClientWithdrawFeeChargerTest extends TestCase
 
     public static function dataProviderForChargeTesting(): array
     {
-        $client = new Client(1, Client::TYPE_BUSINESS);
-        $firstOperation = new Operation('EUR', new \DateTime(), '5', Operation::TYPE_WITHDRAW, $client);
-        $secondOperation = new Operation('EUR', new \DateTime(), '15', Operation::TYPE_WITHDRAW, $client);
-        $thirdOperation = new Operation('EUR', new \DateTime(), '0.5', Operation::TYPE_WITHDRAW, $client);
-        $fourthOperation = new Operation('EUR', new \DateTime(), '0', Operation::TYPE_WITHDRAW, $client);
+        $client = new Client(1, ClientType::BUSINESS);
+        $firstOperation = new Operation('EUR', new \DateTime(), '5', OperationType::WITHDRAW, $client);
+        $secondOperation = new Operation('EUR', new \DateTime(), '15', OperationType::WITHDRAW, $client);
+        $thirdOperation = new Operation('EUR', new \DateTime(), '0.5', OperationType::WITHDRAW, $client);
+        $fourthOperation = new Operation('EUR', new \DateTime(), '0', OperationType::WITHDRAW, $client);
 
         return [
             [$firstOperation, '0.50'],
@@ -54,11 +56,11 @@ class BusinessClientWithdrawFeeChargerTest extends TestCase
 
     public static function dataProviderForSupportsTesting(): array
     {
-        $client = new Client(1, Client::TYPE_BUSINESS);
-        $firstOperation = new Operation('EUR', new \DateTime(), '5', Operation::TYPE_DEPOSIT, $client);
-        $secondOperation = new Operation('EUR', new \DateTime(), '15', Operation::TYPE_WITHDRAW, $client);
-        $thirdOperation = new Operation('EUR', new \DateTime(), '0.5', Operation::TYPE_WITHDRAW, $client);
-        $fourthOperation = new Operation('EUR', new \DateTime(), '0', Operation::TYPE_DEPOSIT, $client);
+        $client = new Client(1, ClientType::BUSINESS);
+        $firstOperation = new Operation('EUR', new \DateTime(), '5', OperationType::DEPOSIT, $client);
+        $secondOperation = new Operation('EUR', new \DateTime(), '15', OperationType::WITHDRAW, $client);
+        $thirdOperation = new Operation('EUR', new \DateTime(), '0.5', OperationType::WITHDRAW, $client);
+        $fourthOperation = new Operation('EUR', new \DateTime(), '0', OperationType::DEPOSIT, $client);
 
         return [
             [$firstOperation, false],

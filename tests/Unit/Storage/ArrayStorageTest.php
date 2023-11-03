@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\CommissionTask\Tests\Unit\Storage;
 
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Storage\ArrayStorage;
 use App\CommissionTask\Storage\StorageInterface;
 use PHPUnit\Framework\TestCase;
@@ -31,13 +32,13 @@ class ArrayStorageTest extends TestCase
         $this->assertEmpty($storage->all(StorageInterface::PARTITION_CURRENCIES));
 
         $this->assertNull($storage->get(StorageInterface::PARTITION_CLIENTS, '1'));
-        $storage->add(StorageInterface::PARTITION_CLIENTS, '1', new Client(1, Client::TYPE_PRIVATE));
+        $storage->add(StorageInterface::PARTITION_CLIENTS, '1', new Client(1, ClientType::PRIVATE));
         $this->assertNotNull($storage->get(StorageInterface::PARTITION_CLIENTS, '1'));
         $this->assertInstanceOf(Client::class, $storage->get(StorageInterface::PARTITION_CLIENTS, '1'));
         $this->assertCount(1, $storage->all(StorageInterface::PARTITION_CLIENTS));
 
         $this->assertTrue($storage->has(StorageInterface::PARTITION_CLIENTS, '1'));
-        $storage->add(StorageInterface::PARTITION_CLIENTS, '1', new Client(1, Client::TYPE_PRIVATE));
+        $storage->add(StorageInterface::PARTITION_CLIENTS, '1', new Client(1, ClientType::PRIVATE));
         $this->assertNotNull($storage->get(StorageInterface::PARTITION_CLIENTS, '1'));
         $this->assertInstanceOf(Client::class, $storage->get(StorageInterface::PARTITION_CLIENTS, '1'));
         $this->assertCount(1, $storage->all(StorageInterface::PARTITION_CLIENTS));

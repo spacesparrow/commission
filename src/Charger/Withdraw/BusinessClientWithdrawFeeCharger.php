@@ -6,7 +6,9 @@ namespace App\CommissionTask\Charger\Withdraw;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
 use Brick\Math\Exception\RoundingNecessaryException;
@@ -38,7 +40,7 @@ readonly class BusinessClientWithdrawFeeCharger implements FeeChargerInterface
 
     public function supports(Operation $operation): bool
     {
-        return $operation->getType() === Operation::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === Client::TYPE_BUSINESS;
+        return $operation->getType() === OperationType::WITHDRAW
+            && $operation->getClient()->getType() === ClientType::BUSINESS;
     }
 }

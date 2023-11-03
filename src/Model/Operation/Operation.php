@@ -9,14 +9,11 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 readonly class Operation implements ModelInterface
 {
-    public const TYPE_DEPOSIT = 'deposit';
-    public const TYPE_WITHDRAW = 'withdraw';
-
     public function __construct(
         private string $currency,
         private \DateTimeInterface $processedAt,
         private string $amount,
-        private string $type,
+        private OperationType $type,
         private Client $client
     ) {
     }
@@ -36,7 +33,7 @@ readonly class Operation implements ModelInterface
         return $this->amount;
     }
 
-    public function getType(): string
+    public function getType(): OperationType
     {
         return $this->type;
     }
@@ -48,6 +45,6 @@ readonly class Operation implements ModelInterface
 
     public function getIdentifier(): string
     {
-        return $this->getProcessedAt()->format('Y-m-d H:i:s').$this->getClient()->getId().$this->getType();
+        return $this->getProcessedAt()->format('Y-m-d H:i:s').$this->getClient()->getId().$this->getType()->value;
     }
 }

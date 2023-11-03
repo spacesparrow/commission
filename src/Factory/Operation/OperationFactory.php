@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\CommissionTask\Factory\Operation;
 
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 use App\CommissionTask\Storage\StorageInterface;
 
 readonly class OperationFactory
@@ -23,7 +25,7 @@ readonly class OperationFactory
             $csvRow['currency'],
             new \DateTime($csvRow['processed_at']),
             $csvRow['amount'],
-            $csvRow['operation_type'],
+            OperationType::from($csvRow['operation_type']),
             $this->getClient($csvRow['client_id'], $csvRow['client_type'])
         );
     }
@@ -33,7 +35,7 @@ readonly class OperationFactory
         $client = $this->storage->get(StorageInterface::PARTITION_CLIENTS, $clientId);
 
         if (!$client) {
-            $client = new Client((int) $clientId, $clientType);
+            $client = new Client((int) $clientId, ClientType::from($clientType));
             $this->storage->add(StorageInterface::PARTITION_CLIENTS, $client->getIdentifier(), $client);
         }
 

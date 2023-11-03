@@ -6,6 +6,7 @@ namespace App\CommissionTask\Charger\Deposit;
 
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 use Brick\Math\Exception\MathException;
 use Brick\Math\Exception\NumberFormatException;
 use Brick\Math\Exception\RoundingNecessaryException;
@@ -37,6 +38,6 @@ readonly class DepositFeeCharger implements FeeChargerInterface
 
     public function supports(Operation $operation): bool
     {
-        return $operation->getType() === Operation::TYPE_DEPOSIT;
+        return $operation->getType() === OperationType::DEPOSIT;
     }
 }

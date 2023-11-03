@@ -8,10 +8,7 @@ use App\CommissionTask\Model\Core\ModelInterface;
 
 readonly class Client implements ModelInterface
 {
-    public const TYPE_PRIVATE = 'private';
-    public const TYPE_BUSINESS = 'business';
-
-    public function __construct(private int $id, private string $type)
+    public function __construct(private int $id, private ClientType $type)
     {
     }
 
@@ -20,7 +17,7 @@ readonly class Client implements ModelInterface
         return $this->id;
     }
 
-    public function getType(): string
+    public function getType(): ClientType
     {
         return $this->type;
     }

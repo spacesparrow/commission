@@ -7,7 +7,9 @@ namespace App\CommissionTask\Charger\Withdraw;
 use App\CommissionTask\Charger\FeeChargerInterface;
 use App\CommissionTask\Converter\CurrencyConverter;
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 use App\CommissionTask\Storage\StorageInterface;
 use Brick\Math\BigDecimal;
 use Brick\Math\Exception\MathException;
@@ -82,8 +84,8 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
 
     public function supports(Operation $operation): bool
     {
-        return $operation->getType() === Operation::TYPE_WITHDRAW
-            && $operation->getClient()->getType() === Client::TYPE_PRIVATE;
+        return $operation->getType() === OperationType::WITHDRAW
+            && $operation->getClient()->getType() === ClientType::PRIVATE;
     }
 
     private function getClosureForSearch(Operation $operation): callable
@@ -93,7 +95,7 @@ class PrivateClientWithdrawFeeCharger implements FeeChargerInterface
         $week = $this->getWeekIdentifier($processedDate);
 
         return function (Operation $operation) use ($client, $week) {
-            return $operation->getType() === Operation::TYPE_WITHDRAW
+            return $operation->getType() === OperationType::WITHDRAW
                 && $operation->getClient() === $client
                 && $this->getWeekIdentifier($operation->getProcessedAt()) === $week;
         };

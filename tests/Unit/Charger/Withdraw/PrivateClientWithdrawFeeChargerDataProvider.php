@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\CommissionTask\Tests\Unit\Charger\Withdraw;
 
 use App\CommissionTask\Model\Client\Client;
+use App\CommissionTask\Model\Client\ClientType;
 use App\CommissionTask\Model\Operation\Operation;
+use App\CommissionTask\Model\Operation\OperationType;
 
 final class PrivateClientWithdrawFeeChargerDataProvider
 {
@@ -71,10 +73,10 @@ final class PrivateClientWithdrawFeeChargerDataProvider
 
     public static function dataProviderForSupportsTesting(): array
     {
-        $firstOperation = self::getOperation('5', Operation::TYPE_DEPOSIT);
+        $firstOperation = self::getOperation('5', OperationType::DEPOSIT);
         $secondOperation = self::getOperation('15');
         $thirdOperation = self::getOperation('0.5');
-        $fourthOperation = self::getOperation('0', Operation::TYPE_DEPOSIT);
+        $fourthOperation = self::getOperation('0', OperationType::DEPOSIT);
 
         return [
             [$firstOperation, false],
@@ -86,10 +88,10 @@ final class PrivateClientWithdrawFeeChargerDataProvider
 
     public static function getClient(): Client
     {
-        return new Client(1, Client::TYPE_PRIVATE);
+        return new Client(1, ClientType::PRIVATE);
     }
 
-    public static function getOperation(string $amount, string $operationType = Operation::TYPE_WITHDRAW): Operation
+    public static function getOperation(string $amount, OperationType $operationType = OperationType::WITHDRAW): Operation
     {
         return new Operation('EUR', new \DateTime(), $amount, $operationType, self::getClient());
     }
