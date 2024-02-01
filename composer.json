@@ -33,7 +33,7 @@
 		"bin-dir": "bin"
 	},
 	"scripts": {
-		"phpunit": "phpunit",
+		"phpunit": "phpunit tests/PHPUnit",
 		"fix-cs": "php-cs-fixer fix",
 		"test-cs": "php-cs-fixer fix --dry-run -v",
 		"test": [

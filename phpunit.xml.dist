@@ -8,11 +8,11 @@
         cacheDirectory=".phpunit.cache">
     <coverage/>
     <testsuites>
-        <testsuite name="Functional tests">
-            <directory>tests/Functional</directory>
+        <testsuite name="PHPUnit Functional tests">
+            <directory>tests/PHPUnit/Functional</directory>
         </testsuite>
-        <testsuite name="Unit tests">
-            <directory>tests/Unit</directory>
+        <testsuite name="PHPUnit Unit tests">
+            <directory>tests/PHPUnit/Unit</directory>
         </testsuite>
     </testsuites>
     <source>
